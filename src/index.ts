@@ -7,6 +7,7 @@ import { DnsCommand } from "./commands/DnsCommand";
 import { DnsService } from "./services/DnsService";
 import {ServicesUpCommand} from "./commands/ServicesUpCommand";
 import {ServicesDownCommand} from "./commands/ServicesDownCommand";
+import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
 const { program } = require("commander");
 
 const configService = new ConfigService({
@@ -39,6 +40,9 @@ program
 program
     .command('services-down')
     .action(() => { (new ServicesDownCommand(configService, systemService)).invoke(); });
+program
+    .command('services-build')
+    .action(() => { (new ServicesBuildCommand(configService, systemService)).invoke(); });
 program.parse();
 
 

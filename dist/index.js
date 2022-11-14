@@ -9,6 +9,7 @@ const DnsCommand_1 = require("./commands/DnsCommand");
 const DnsService_1 = require("./services/DnsService");
 const ServicesUpCommand_1 = require("./commands/ServicesUpCommand");
 const ServicesDownCommand_1 = require("./commands/ServicesDownCommand");
+const ServicesBuildCommand_1 = require("./commands/ServicesBuildCommand");
 const { program } = require("commander");
 const configService = new ConfigService_1.ConfigService({
     pathToGatewayProject: './projects/gateway',
@@ -39,5 +40,8 @@ program
 program
     .command('services-down')
     .action(() => { (new ServicesDownCommand_1.ServicesDownCommand(configService, systemService)).invoke(); });
+program
+    .command('services-build')
+    .action(() => { (new ServicesBuildCommand_1.ServicesBuildCommand(configService, systemService)).invoke(); });
 program.parse();
 //# sourceMappingURL=index.js.map
