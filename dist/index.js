@@ -14,8 +14,8 @@ const { program } = require("commander");
 const configService = new ConfigService_1.ConfigService({
     pathToGatewayProject: './projects/gateway',
     pathToDockerConfig: '/var/www/localenv/docker-compose.yml',
-    osName: 'linux',
-    fileSystem: 'linux_default',
+    osName: ConfigService_1.OsName.LINUX,
+    fileSystem: ConfigService_1.FileSystem.LINUX_DEFAULT,
     servicesRestartPolicy: 'always',
     enabledServices: []
 });

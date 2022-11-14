@@ -1,18 +1,23 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 
-export const OS_NAME_LINUX = 'linux';
-export const OS_NAME_MACOS = 'macos';
-export const FILE_SYSTEM_LINUX_DEFAULT = 'linux_default';
-export const FILE_SYSTEM_MACOS_DEFAULT = 'macos_default';
-export const FILE_SYSTEM_MACOS_MUTAGEN = 'macos_mutagen';
-export const FILE_SYSTEM_MACOS_NFS = 'macos_nfs';
+export enum OsName {
+    LINUX = 'linux',
+    MACOS = 'macos'
+}
+
+export enum FileSystem {
+    LINUX_DEFAULT = 'linux_default',
+    MACOS_DEFAULT = 'macos_default',
+    MACOS_MUTAGEN = 'macos_mutagen',
+    MACOS_NFS = 'macos_nfs'
+}
 
 export interface ConfigDTO {
     pathToDockerConfig: string,
     pathToGatewayProject: string,
-    osName: string,
-    fileSystem: string,
+    osName: OsName,
+    fileSystem: FileSystem,
     servicesRestartPolicy: string,
     enabledServices: string[]
 }

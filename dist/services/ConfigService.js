@@ -1,14 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConfigService = exports.FILE_SYSTEM_MACOS_NFS = exports.FILE_SYSTEM_MACOS_MUTAGEN = exports.FILE_SYSTEM_MACOS_DEFAULT = exports.FILE_SYSTEM_LINUX_DEFAULT = exports.OS_NAME_MACOS = exports.OS_NAME_LINUX = void 0;
+exports.ConfigService = exports.FileSystem = exports.OsName = void 0;
 const yaml = require('js-yaml');
 const fs = require('fs');
-exports.OS_NAME_LINUX = 'linux';
-exports.OS_NAME_MACOS = 'macos';
-exports.FILE_SYSTEM_LINUX_DEFAULT = 'linux_default';
-exports.FILE_SYSTEM_MACOS_DEFAULT = 'macos_default';
-exports.FILE_SYSTEM_MACOS_MUTAGEN = 'macos_mutagen';
-exports.FILE_SYSTEM_MACOS_NFS = 'macos_nfs';
+var OsName;
+(function (OsName) {
+    OsName["LINUX"] = "linux";
+    OsName["MACOS"] = "macos";
+})(OsName = exports.OsName || (exports.OsName = {}));
+var FileSystem;
+(function (FileSystem) {
+    FileSystem["LINUX_DEFAULT"] = "linux_default";
+    FileSystem["MACOS_DEFAULT"] = "macos_default";
+    FileSystem["MACOS_MUTAGEN"] = "macos_mutagen";
+    FileSystem["MACOS_NFS"] = "macos_nfs";
+})(FileSystem = exports.FileSystem || (exports.FileSystem = {}));
 class ConfigService {
     constructor(config) {
         this.config = config;

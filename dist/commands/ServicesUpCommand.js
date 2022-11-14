@@ -8,7 +8,7 @@ class ServicesUpCommand {
         this.systemService = systemService;
     }
     invoke() {
-        if (this.configService.fileSystem() === ConfigService_1.FILE_SYSTEM_MACOS_MUTAGEN) {
+        if (this.configService.fileSystem() === ConfigService_1.FileSystem.MACOS_MUTAGEN) {
             this.systemService.exec('mutagen-compose up -d');
         }
         else {

@@ -1,20 +1,21 @@
-import { HostsCommand } from './commands/HostsCommand';
-import { ServicesPsCommand } from "./commands/ServicesPsCommand";
-import { SystemService } from "./services/SystemService";
-import { ConfigService } from "./services/ConfigService";
-import { DockerHostService } from "./services/DockerHostService";
-import { DnsCommand } from "./commands/DnsCommand";
-import { DnsService } from "./services/DnsService";
+import {HostsCommand} from './commands/HostsCommand';
+import {ServicesPsCommand} from "./commands/ServicesPsCommand";
+import {SystemService} from "./services/SystemService";
+import {ConfigService, FileSystem, OsName} from "./services/ConfigService";
+import {DockerHostService} from "./services/DockerHostService";
+import {DnsCommand} from "./commands/DnsCommand";
+import {DnsService} from "./services/DnsService";
 import {ServicesUpCommand} from "./commands/ServicesUpCommand";
 import {ServicesDownCommand} from "./commands/ServicesDownCommand";
 import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
+
 const { program } = require("commander");
 
 const configService = new ConfigService({
     pathToGatewayProject: './projects/gateway',
     pathToDockerConfig: '/var/www/localenv/docker-compose.yml',
-    osName: 'linux',
-    fileSystem: 'linux_default',
+    osName: OsName.LINUX,
+    fileSystem: FileSystem.LINUX_DEFAULT,
     servicesRestartPolicy: 'always',
     enabledServices: []
 });
