@@ -19,6 +19,9 @@ class ConfigService {
     dockerServices() {
         return yaml.load(fs.readFileSync(this.config.pathToDockerConfig, 'utf8'))['services'];
     }
+    pathToGatewayProject() {
+        return this.config.pathToGatewayProject;
+    }
 }
 exports.ConfigService = ConfigService;
 //# sourceMappingURL=ConfigService.js.map

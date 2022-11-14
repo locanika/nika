@@ -10,6 +10,7 @@ export const FILE_SYSTEM_MACOS_NFS = 'macos_nfs';
 
 export interface ConfigDTO {
     pathToDockerConfig: string,
+    pathToGatewayProject: string,
     osName: string,
     fileSystem: string,
     servicesRestartPolicy: string,
@@ -26,5 +27,9 @@ export class ConfigService {
 
     dockerServices(): any {
         return yaml.load(fs.readFileSync(this.config.pathToDockerConfig, 'utf8'))['services'];
+    }
+
+    pathToGatewayProject(): string {
+        return this.config.pathToGatewayProject;
     }
 }

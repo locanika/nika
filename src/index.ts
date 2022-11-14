@@ -5,9 +5,12 @@ import { ConfigService } from "./services/ConfigService";
 import { DockerHostService } from "./services/DockerHostService";
 import { DnsCommand } from "./commands/DnsCommand";
 import { DnsService } from "./services/DnsService";
+import {ServicesUpCommand} from "./commands/ServicesUpCommand";
+import {ServicesDownCommand} from "./commands/ServicesDownCommand";
 const { program } = require("commander");
 
 const configService = new ConfigService({
+    pathToGatewayProject: './projects/gateway',
     pathToDockerConfig: '/var/www/localenv/docker-compose.yml',
     osName: 'linux',
     fileSystem: 'linux_default',
@@ -30,6 +33,12 @@ program
 program
     .command('services-ps')
     .action(() => { (new ServicesPsCommand(configService, systemService)).invoke(); });
+program
+    .command('services-up')
+    .action(() => { (new ServicesUpCommand(configService, systemService)).invoke(); });
+program
+    .command('services-down')
+    .action(() => { (new ServicesDownCommand(configService, systemService)).invoke(); });
 program.parse();
 
 
