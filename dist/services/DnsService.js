@@ -39,7 +39,7 @@ class DnsService {
         console.log('1) mac - "/usr/local/etc/nginx/servers/"');
         console.log('2) linux - "/etc/nginx/sites-enabled/"');
         console.log('or just type custom path');
-        let gatewayConfigsPath = '/tmp/dimas/';
+        let gatewayConfigsPath = '0';
         let useDockerGateway = false;
         let self = this;
         if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
