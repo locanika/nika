@@ -2,8 +2,6 @@ import fs from "fs";
 import {ConfigDTO} from './ConfigService';
 import {DockerServiceDTO, DockerService} from "./DockerService";
 
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
 const nunjucks = require('nunjucks')
 
 export enum GatewayConfigsPath {
@@ -42,9 +40,6 @@ export class DnsService {
         console.log('2) linux - "/etc/nginx/sites-enabled/"')
         console.log('or just type custom path')
 
-        const rl = readline.createInterface({ input, output });
-        rl.close();
-
         let gatewayConfigsPath = '0';
         let useDockerGateway = false;
         let self = this;
@@ -71,16 +66,15 @@ export class DnsService {
             }
 
             let gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
-            let gatewayConfig = self.generateNginxProxyConfig(host.dockerHost, proxyPath, host.corsEnabled);
+            let gatewayConfig = self.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
             fs.writeFileSync(gatewayConfigPath, gatewayConfig);
             console.log("Created file: " + gatewayConfigPath)
         });
     }
 
     generateNginxProxyConfig(host: string, proxyPath: string, corsEnabled: boolean): string {
-        let proxyConfig = fs.readFileSync('./templates/nginx_proxy.conf', 'utf8');
         return nunjucks.renderString(
-            fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
+            fs.readFileSync('./templates/nginx_proxy.conf', 'utf8'), {
                 host: host,
                 proxy_path: proxyPath,
                 cors_enabled: corsEnabled
