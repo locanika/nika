@@ -1,4 +1,4 @@
-import { exec, ExecException } from "child_process";
+import { ExecException, exec } from "child_process";
 
 export class SystemService {
     exec(command: string): void {
