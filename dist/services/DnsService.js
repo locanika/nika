@@ -41,7 +41,6 @@ class DnsService {
         console.log('or just type custom path');
         let gatewayConfigsPath = '0';
         let useDockerGateway = false;
-        let self = this;
         if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
             gatewayConfigsPath = this.config.pathToGatewayProject;
             useDockerGateway = true;
@@ -53,13 +52,13 @@ class DnsService {
         if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
             gatewayConfigsPath = '/etc/nginx/sites-enabled/';
         }
-        this.dockerService.listingAll().filter(x => x.enabled).forEach(function (host) {
+        this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
             let proxyPath = host.externalHost + ':' + host.externalPort;
             if (useDockerGateway) {
                 proxyPath = host.dockerHost + ':' + host.dockerPort;
             }
-            let gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
-            let gatewayConfig = self.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
+            const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
+            const gatewayConfig = this.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
             fs_1.default.writeFileSync(gatewayConfigPath, gatewayConfig);
             console.log("Created file: " + gatewayConfigPath);
         });

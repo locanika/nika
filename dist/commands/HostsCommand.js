@@ -6,12 +6,11 @@ class HostsCommand {
         this.dockerHostService = dockerHostService;
     }
     invoke() {
-        let self = this;
-        this.dockerHostService.listingAll().filter(x => x.enabled).forEach(function (host) {
-            console.log(`${self.printHostDetails(host)}`);
+        this.dockerHostService.listingAll().filter(x => x.enabled).forEach((host) => {
+            console.log(`${this.printHostDetails(host)}`);
         });
-        this.dockerHostService.listingAll().filter(x => !x.enabled).forEach(function (host) {
-            console.log(`[DISABLED] ${self.printHostDetails(host)}`);
+        this.dockerHostService.listingAll().filter(x => !x.enabled).forEach((host) => {
+            console.log(`[DISABLED] ${this.printHostDetails(host)}`);
         });
     }
     printHostDetails(host) {
