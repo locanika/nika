@@ -46,4 +46,4 @@ class DockerService {
     }
 }
 exports.DockerService = DockerService;
-//# sourceMappingURL=DockerHostService.js.map
+//# sourceMappingURL=DockerService.js.map

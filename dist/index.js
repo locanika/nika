@@ -4,7 +4,7 @@ const HostsCommand_1 = require("./commands/HostsCommand");
 const ServicesPsCommand_1 = require("./commands/ServicesPsCommand");
 const SystemService_1 = require("./services/SystemService");
 const ConfigService_1 = require("./services/ConfigService");
-const DockerHostService_1 = require("./services/DockerHostService");
+const DockerService_1 = require("./services/DockerService");
 const DnsCommand_1 = require("./commands/DnsCommand");
 const DnsService_1 = require("./services/DnsService");
 const ServicesUpCommand_1 = require("./commands/ServicesUpCommand");
@@ -13,14 +13,14 @@ const ServicesBuildCommand_1 = require("./commands/ServicesBuildCommand");
 const { program } = require("commander");
 const config = (new ConfigService_1.ConfigService()).build();
 const systemService = new SystemService_1.SystemService();
-const dockerHostService = new DockerHostService_1.DockerHostService(config);
-const dnsService = new DnsService_1.DnsService(config, dockerHostService);
+const dockerService = new DockerService_1.DockerService(config);
+const dnsService = new DnsService_1.DnsService(config, dockerService);
 program
     .name('nika')
     .description('Small Docker Dev Environment');
 program
     .command('hosts')
-    .action(() => { (new HostsCommand_1.HostsCommand(dockerHostService)).invoke(); });
+    .action(() => { (new HostsCommand_1.HostsCommand(dockerService)).invoke(); });
 program
     .command('dns')
     .action(() => { (new DnsCommand_1.DnsCommand(dnsService)).invoke(); });

@@ -1,24 +1,24 @@
 import {ConfigDTO} from './ConfigService';
 const yaml = require('js-yaml');
 const fs = require('fs');
-
 const nunjucks = require('nunjucks')
 
-export interface DockerHostDTO {
+export interface DockerServiceDTO {
     enabled: boolean,
     domain: string,
     dockerHost: string,
     dockerPort: string
     externalHost: string,
     externalPort: string,
-    corsEnabled: boolean
+    corsEnabled: boolean,
+    raw: any
 }
 
-export class DockerHostService {
+export class DockerService {
     constructor(private config: ConfigDTO) {
     }
 
-    listingAll(): DockerHostDTO[] {
+    listingAll(): DockerServiceDTO[] {
         let result = [];
         let rawServices = this.rawServicesListing();
 
@@ -41,7 +41,8 @@ export class DockerHostService {
                     dockerPort: serviceData.ports[0].split(':')[1],
                     externalHost: '127.0.0.1',
                     externalPort: serviceData.ports[0].split(':')[0],
-                    corsEnabled: !!serviceData.environment?.BACKEND_API_CORS
+                    corsEnabled: !!serviceData.environment?.BACKEND_API_CORS,
+                    raw: serviceData
                 })
             }
         }
