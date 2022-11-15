@@ -34,10 +34,10 @@ export class DnsService {
      * Generate config for proxy nginx to allow use local domain names
      */
     generateGatewayConfigs(): void {
-        console.log('Please specify nginx configs folder (0, 1 or 2)')
-        console.log('0) gateway - "' + this.config.pathToGatewayProject + '"')
-        console.log('1) mac - "/usr/local/etc/nginx/servers/"')
-        console.log('2) linux - "/etc/nginx/sites-enabled/"')
+        console.log('Please specify nginx configs folder')
+        console.log(GatewayConfigsPath.DOCKER_GATEWAY + ') gateway - "' + this.config.pathToGatewayProject + '"')
+        console.log(GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS + ') macos - "/usr/local/etc/nginx/servers/"')
+        console.log(GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX + ') linux - "/etc/nginx/sites-enabled/"')
         console.log('or just type custom path')
 
         let gatewayConfigsPath = '0';
@@ -53,7 +53,6 @@ export class DnsService {
         if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS) {
             gatewayConfigsPath = '/usr/local/etc/nginx/servers/';
         }
-
 
         if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
             gatewayConfigsPath = '/etc/nginx/sites-enabled/';
