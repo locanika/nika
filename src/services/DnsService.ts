@@ -3,6 +3,7 @@ import {ConfigDTO} from './ConfigService';
 import {DockerService, DockerServiceDTO} from "./DockerService";
 
 const nunjucks = require('nunjucks')
+const readline = require('readline');
 
 export enum GatewayConfigsPath {
     DOCKER_GATEWAY = '0',
@@ -34,43 +35,54 @@ export class DnsService {
      * Generate config for proxy nginx to allow use local domain names
      */
     generateGatewayConfigs(): void {
+        const rl = readline.createInterface({
+            input: process.stdin, //or fileStream
+            output: process.stdout
+        });
+
         console.log('Please specify nginx configs folder')
         console.log(GatewayConfigsPath.DOCKER_GATEWAY + ') gateway - "' + this.config.pathToGatewayProject + '"')
         console.log(GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS + ') macos - "/usr/local/etc/nginx/servers/"')
         console.log(GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX + ') linux - "/etc/nginx/sites-enabled/"')
-        console.log('or just type custom path')
 
-        let gatewayConfigsPath = '0';
-        let useDockerGateway = false;
+        let self = this;
 
-        if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
-            gatewayConfigsPath = this.config.pathToGatewayProject
-            useDockerGateway = true;
-            // IOService().create_directory_if_not_exists(this.config.pathToGatewayProject)
-        }
+        rl.question("or just type custom path\n", function(gatewayConfigsPath: string) {
+            rl.close();
 
-        if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS) {
-            gatewayConfigsPath = '/usr/local/etc/nginx/servers/';
-        }
+            let useDockerGateway = false;
 
-        if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
-            gatewayConfigsPath = '/etc/nginx/sites-enabled/';
-        }
-
-        this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
-            let proxyPath = host.externalHost + ':' + host.externalPort;
-            if (useDockerGateway) {
-                proxyPath = host.dockerHost + ':' + host.dockerPort;
+            if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
+                gatewayConfigsPath = self.config.pathToGatewayProject
+                useDockerGateway = true;
+                if (!fs.existsSync(self.config.pathToGatewayProject)) {
+                    fs.mkdirSync(self.config.pathToGatewayProject);
+                }
             }
 
-            const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
-            const gatewayConfig = this.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
-            fs.writeFileSync(gatewayConfigPath, gatewayConfig);
-            console.log("Created file: " + gatewayConfigPath)
+            if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS) {
+                gatewayConfigsPath = '/usr/local/etc/nginx/servers/';
+            }
+
+            if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
+                gatewayConfigsPath = '/etc/nginx/sites-enabled/';
+            }
+
+            self.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
+                let proxyPath = host.externalHost + ':' + host.externalPort;
+                if (useDockerGateway) {
+                    proxyPath = host.dockerHost + ':' + host.dockerPort;
+                }
+
+                const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
+                const gatewayConfig = self.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
+                fs.writeFileSync(gatewayConfigPath, gatewayConfig);
+                console.log("Created file: " + gatewayConfigPath)
+            });
         });
     }
 
-    generateNginxProxyConfig(host: string, proxyPath: string, corsEnabled: boolean): string {
+    private generateNginxProxyConfig(host: string, proxyPath: string, corsEnabled: boolean): string {
         return nunjucks.renderString(
             fs.readFileSync('./templates/nginx_proxy.conf', 'utf8'), {
                 host: host,

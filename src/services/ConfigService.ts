@@ -40,7 +40,7 @@ export class ConfigService {
         const fileSystem = config['file_system'] || this.getDefaultFileSystem(osName);
 
         return {
-            pathToGatewayProject: './projects/gateway',
+            pathToGatewayProject: './projects/gateway/',
             pathToDockerConfig: './docker-compose.yml',
             osName: osName,
             fileSystem: fileSystem,

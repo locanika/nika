@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DnsService = exports.GatewayConfigsPath = void 0;
 const fs_1 = __importDefault(require("fs"));
 const nunjucks = require('nunjucks');
+const readline = require('readline');
 var GatewayConfigsPath;
 (function (GatewayConfigsPath) {
     GatewayConfigsPath["DOCKER_GATEWAY"] = "0";
@@ -34,33 +35,41 @@ class DnsService {
      * Generate config for proxy nginx to allow use local domain names
      */
     generateGatewayConfigs() {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
         console.log('Please specify nginx configs folder');
         console.log(GatewayConfigsPath.DOCKER_GATEWAY + ') gateway - "' + this.config.pathToGatewayProject + '"');
         console.log(GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS + ') macos - "/usr/local/etc/nginx/servers/"');
         console.log(GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX + ') linux - "/etc/nginx/sites-enabled/"');
-        console.log('or just type custom path');
-        let gatewayConfigsPath = '0';
-        let useDockerGateway = false;
-        if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
-            gatewayConfigsPath = this.config.pathToGatewayProject;
-            useDockerGateway = true;
-            // IOService().create_directory_if_not_exists(this.config.pathToGatewayProject)
-        }
-        if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS) {
-            gatewayConfigsPath = '/usr/local/etc/nginx/servers/';
-        }
-        if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
-            gatewayConfigsPath = '/etc/nginx/sites-enabled/';
-        }
-        this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
-            let proxyPath = host.externalHost + ':' + host.externalPort;
-            if (useDockerGateway) {
-                proxyPath = host.dockerHost + ':' + host.dockerPort;
+        let self = this;
+        rl.question("or just type custom path\n", function (gatewayConfigsPath) {
+            rl.close();
+            let useDockerGateway = false;
+            if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
+                gatewayConfigsPath = self.config.pathToGatewayProject;
+                useDockerGateway = true;
+                if (!fs_1.default.existsSync(self.config.pathToGatewayProject)) {
+                    fs_1.default.mkdirSync(self.config.pathToGatewayProject);
+                }
             }
-            const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
-            const gatewayConfig = this.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
-            fs_1.default.writeFileSync(gatewayConfigPath, gatewayConfig);
-            console.log("Created file: " + gatewayConfigPath);
+            if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS) {
+                gatewayConfigsPath = '/usr/local/etc/nginx/servers/';
+            }
+            if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
+                gatewayConfigsPath = '/etc/nginx/sites-enabled/';
+            }
+            self.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
+                let proxyPath = host.externalHost + ':' + host.externalPort;
+                if (useDockerGateway) {
+                    proxyPath = host.dockerHost + ':' + host.dockerPort;
+                }
+                const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
+                const gatewayConfig = self.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
+                fs_1.default.writeFileSync(gatewayConfigPath, gatewayConfig);
+                console.log("Created file: " + gatewayConfigPath);
+            });
         });
     }
     generateNginxProxyConfig(host, proxyPath, corsEnabled) {
