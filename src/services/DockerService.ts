@@ -20,10 +20,10 @@ export class DockerService {
     }
 
     listingAll(): DockerServiceDTO[] {
-        let result = [];
-        let rawServices = this.rawServicesListing();
+        const result = [];
+        const rawServices = this.rawServicesListing();
 
-        for (let serviceName in rawServices) {
+        for (const serviceName in rawServices) {
             const serviceData = rawServices[serviceName];
             let serviceDomains = serviceData.environment?.DOMAINS;
 
@@ -33,7 +33,7 @@ export class DockerService {
 
             serviceDomains = serviceDomains.split(',');
 
-            for (let key in serviceDomains) {
+            for (const key in serviceDomains) {
                 const serviceDomain = serviceDomains[key];
                 result.push({
                     enabled: this.config.enabledServices.includes(serviceName),
@@ -51,7 +51,7 @@ export class DockerService {
     }
 
     private rawServicesListing(): any {
-        let dockerCompose = nunjucks.renderString(
+        const dockerCompose = nunjucks.renderString(
             fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
                 os_name: this.config.osName,
                 file_system: this.config.fileSystem,

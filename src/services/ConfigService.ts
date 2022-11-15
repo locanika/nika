@@ -36,8 +36,8 @@ export class ConfigService {
             config = { ...config, ...yaml.load(fs.readFileSync('./config.local.yml', 'utf8')) };
         }
 
-        let osName = config['os_name'] || this.getDefaultOsName();
-        let fileSystem = config['file_system'] || this.getDefaultFileSystem(osName);
+        const osName = config['os_name'] || this.getDefaultOsName();
+        const fileSystem = config['file_system'] || this.getDefaultFileSystem(osName);
 
         return {
             pathToGatewayProject: './projects/gateway',

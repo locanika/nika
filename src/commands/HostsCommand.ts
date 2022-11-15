@@ -8,13 +8,12 @@ export class HostsCommand {
     }
 
     public invoke(): void {
-        let self = this;
-        this.dockerHostService.listingAll().filter(x => x.enabled).forEach(function (host: DockerServiceDTO) {
-            console.log(`${self.printHostDetails(host)}`);
+        this.dockerHostService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
+            console.log(`${this.printHostDetails(host)}`);
         });
 
-        this.dockerHostService.listingAll().filter(x => !x.enabled).forEach(function (host: DockerServiceDTO) {
-            console.log(`[DISABLED] ${self.printHostDetails(host)}`);
+        this.dockerHostService.listingAll().filter(x => !x.enabled).forEach((host: DockerServiceDTO) => {
+            console.log(`[DISABLED] ${this.printHostDetails(host)}`);
         });
     }
 

@@ -1,6 +1,6 @@
 import fs from "fs";
 import {ConfigDTO} from './ConfigService';
-import {DockerServiceDTO, DockerService} from "./DockerService";
+import {DockerService, DockerServiceDTO} from "./DockerService";
 
 const nunjucks = require('nunjucks')
 
@@ -42,7 +42,6 @@ export class DnsService {
 
         let gatewayConfigsPath = '0';
         let useDockerGateway = false;
-        let self = this;
 
         if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
             gatewayConfigsPath = this.config.pathToGatewayProject
@@ -58,14 +57,14 @@ export class DnsService {
             gatewayConfigsPath = '/etc/nginx/sites-enabled/';
         }
 
-        this.dockerService.listingAll().filter(x => x.enabled).forEach(function (host: DockerServiceDTO) {
+        this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
             let proxyPath = host.externalHost + ':' + host.externalPort;
             if (useDockerGateway) {
                 proxyPath = host.dockerHost + ':' + host.dockerPort;
             }
 
-            let gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
-            let gatewayConfig = self.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
+            const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
+            const gatewayConfig = this.generateNginxProxyConfig(host.domain, proxyPath, host.corsEnabled);
             fs.writeFileSync(gatewayConfigPath, gatewayConfig);
             console.log("Created file: " + gatewayConfigPath)
         });
