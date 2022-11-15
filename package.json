@@ -2,7 +2,7 @@
   "name": "nika",
   "version": "1.0.0",
   "description": "Small Docker Dev Environment",
-  "main": "index.js",
+  "main": "nika.js",
   "scripts": {
     "build": "npx tsc"
   },

@@ -52,4 +52,4 @@ program
     .description('Pull service images and build or rebuild services')
     .action(() => { (new ServicesBuildCommand_1.ServicesBuildCommand(config, systemService)).invoke(); });
 program.parse();
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=nika.js.map
