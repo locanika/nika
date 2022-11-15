@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DnsService = void 0;
 const fs_1 = __importDefault(require("fs"));
 class DnsService {
-    constructor(configService, dockerHostService) {
-        this.configService = configService;
+    constructor(config, dockerHostService) {
+        this.config = config;
         this.dockerHostService = dockerHostService;
     }
     /**
@@ -28,16 +28,16 @@ class DnsService {
      */
     generateGatewayConfigs() {
         console.log('Please specify nginx configs folder (0, 1 or 2)');
-        console.log('0) gateway - "' + this.configService.pathToGatewayProject() + '"');
+        console.log('0) gateway - "' + this.config.pathToGatewayProject + '"');
         console.log('1) mac - "/usr/local/etc/nginx/servers/"');
         console.log('2) linux - "/etc/nginx/sites-enabled/"');
         console.log('or just type custom path');
         let gatewayConfigsPath = '1';
         let useDockerGateway = false;
         // if (gatewayConfigsPath === '0') {
-        //     gatewayConfigsPath = this.configService.pathToGatewayProject()
+        //     gatewayConfigsPath = this.config.pathToGatewayProject
         //     useDockerGateway = true;
-        //     IOService().create_directory_if_not_exists(this.configService.pathToGatewayProject())
+        //     IOService().create_directory_if_not_exists(this.config.pathToGatewayProject)
         // }
         //
         // if (gatewayConfigsPath === '1') {

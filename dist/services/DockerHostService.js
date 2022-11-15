@@ -1,15 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DockerHostService = void 0;
+const yaml = require('js-yaml');
+const fs = require('fs');
+const nunjucks = require('nunjucks');
 class DockerHostService {
-    constructor(configService) {
-        this.configService = configService;
+    constructor(config) {
+        this.config = config;
     }
     listingAll() {
         var _a, _b;
         let result = [];
-        for (let serviceName in this.configService.dockerServices()) {
-            const serviceData = this.configService.dockerServices()[serviceName];
+        let rawServices = this.rawServicesListing();
+        for (let serviceName in rawServices) {
+            const serviceData = rawServices[serviceName];
             let serviceDomains = (_a = serviceData.environment) === null || _a === void 0 ? void 0 : _a.DOMAINS;
             if (!serviceDomains) {
                 continue;
@@ -18,6 +22,7 @@ class DockerHostService {
             for (let key in serviceDomains) {
                 const serviceDomain = serviceDomains[key];
                 result.push({
+                    enabled: this.config.enabledServices.includes(serviceName),
                     domain: serviceDomain,
                     dockerHost: serviceName,
                     dockerPort: serviceData.ports[0].split(':')[1],
@@ -28,6 +33,15 @@ class DockerHostService {
             }
         }
         return result;
+    }
+    rawServicesListing() {
+        let dockerCompose = nunjucks.renderString(fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
+            os_name: this.config.osName,
+            file_system: this.config.fileSystem,
+            docker_mode: this.config.dockerMode,
+            services_restart_policy: this.config.servicesRestartPolicy
+        });
+        return yaml.load(dockerCompose)['services'];
     }
 }
 exports.DockerHostService = DockerHostService;

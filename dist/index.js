@@ -11,17 +11,10 @@ const ServicesUpCommand_1 = require("./commands/ServicesUpCommand");
 const ServicesDownCommand_1 = require("./commands/ServicesDownCommand");
 const ServicesBuildCommand_1 = require("./commands/ServicesBuildCommand");
 const { program } = require("commander");
-const configService = new ConfigService_1.ConfigService({
-    pathToGatewayProject: './projects/gateway',
-    pathToDockerConfig: '/var/www/localenv/docker-compose.yml',
-    osName: ConfigService_1.OsName.LINUX,
-    fileSystem: ConfigService_1.FileSystem.LINUX_DEFAULT,
-    servicesRestartPolicy: 'always',
-    enabledServices: []
-});
+const config = (new ConfigService_1.ConfigService()).build();
 const systemService = new SystemService_1.SystemService();
-const dockerHostService = new DockerHostService_1.DockerHostService(configService);
-const dnsService = new DnsService_1.DnsService(configService, dockerHostService);
+const dockerHostService = new DockerHostService_1.DockerHostService(config);
+const dnsService = new DnsService_1.DnsService(config, dockerHostService);
 program
     .name('nika')
     .description('Small Docker Dev Environment');
@@ -33,15 +26,15 @@ program
     .action(() => { (new DnsCommand_1.DnsCommand(dnsService)).invoke(); });
 program
     .command('services-ps')
-    .action(() => { (new ServicesPsCommand_1.ServicesPsCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesPsCommand_1.ServicesPsCommand(config, systemService)).invoke(); });
 program
     .command('services-up')
-    .action(() => { (new ServicesUpCommand_1.ServicesUpCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesUpCommand_1.ServicesUpCommand(config, systemService)).invoke(); });
 program
     .command('services-down')
-    .action(() => { (new ServicesDownCommand_1.ServicesDownCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesDownCommand_1.ServicesDownCommand(config, systemService)).invoke(); });
 program
     .command('services-build')
-    .action(() => { (new ServicesBuildCommand_1.ServicesBuildCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesBuildCommand_1.ServicesBuildCommand(config, systemService)).invoke(); });
 program.parse();
 //# sourceMappingURL=index.js.map

@@ -1,6 +1,11 @@
-import { ConfigService } from './ConfigService';
+import {ConfigDTO} from './ConfigService';
+const yaml = require('js-yaml');
+const fs = require('fs');
+
+const nunjucks = require('nunjucks')
 
 export interface DockerHostDTO {
+    enabled: boolean,
     domain: string,
     dockerHost: string,
     dockerPort: string
@@ -10,14 +15,15 @@ export interface DockerHostDTO {
 }
 
 export class DockerHostService {
-    constructor(private configService: ConfigService) {
+    constructor(private config: ConfigDTO) {
     }
 
     listingAll(): DockerHostDTO[] {
         let result = [];
+        let rawServices = this.rawServicesListing();
 
-        for (let serviceName in this.configService.dockerServices()) {
-            const serviceData = this.configService.dockerServices()[serviceName];
+        for (let serviceName in rawServices) {
+            const serviceData = rawServices[serviceName];
             let serviceDomains = serviceData.environment?.DOMAINS;
 
             if (!serviceDomains) {
@@ -29,6 +35,7 @@ export class DockerHostService {
             for (let key in serviceDomains) {
                 const serviceDomain = serviceDomains[key];
                 result.push({
+                    enabled: this.config.enabledServices.includes(serviceName),
                     domain: serviceDomain,
                     dockerHost: serviceName,
                     dockerPort: serviceData.ports[0].split(':')[1],
@@ -39,5 +46,17 @@ export class DockerHostService {
             }
         }
         return result;
+    }
+
+    private rawServicesListing(): any {
+        let dockerCompose = nunjucks.renderString(
+            fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
+                os_name: this.config.osName,
+                file_system: this.config.fileSystem,
+                docker_mode: this.config.dockerMode,
+                services_restart_policy: this.config.servicesRestartPolicy
+            }
+        );
+        return yaml.load(dockerCompose)['services'];
     }
 }

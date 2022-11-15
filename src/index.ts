@@ -1,7 +1,7 @@
 import {HostsCommand} from './commands/HostsCommand';
 import {ServicesPsCommand} from "./commands/ServicesPsCommand";
 import {SystemService} from "./services/SystemService";
-import {ConfigService, FileSystem, OsName} from "./services/ConfigService";
+import {ConfigService, DockerMode, FileSystem, OsName} from "./services/ConfigService";
 import {DockerHostService} from "./services/DockerHostService";
 import {DnsCommand} from "./commands/DnsCommand";
 import {DnsService} from "./services/DnsService";
@@ -11,17 +11,10 @@ import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
 
 const { program } = require("commander");
 
-const configService = new ConfigService({
-    pathToGatewayProject: './projects/gateway',
-    pathToDockerConfig: '/var/www/localenv/docker-compose.yml',
-    osName: OsName.LINUX,
-    fileSystem: FileSystem.LINUX_DEFAULT,
-    servicesRestartPolicy: 'always',
-    enabledServices: []
-});
+const config = (new ConfigService()).build();
 const systemService = new SystemService();
-const dockerHostService = new DockerHostService(configService);
-const dnsService = new DnsService(configService, dockerHostService);
+const dockerHostService = new DockerHostService(config);
+const dnsService = new DnsService(config, dockerHostService);
 
 program
     .name('nika')
@@ -34,16 +27,16 @@ program
     .action(() => { (new DnsCommand(dnsService)).invoke(); });
 program
     .command('services-ps')
-    .action(() => { (new ServicesPsCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesPsCommand(config, systemService)).invoke(); });
 program
     .command('services-up')
-    .action(() => { (new ServicesUpCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesUpCommand(config, systemService)).invoke(); });
 program
     .command('services-down')
-    .action(() => { (new ServicesDownCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesDownCommand(config, systemService)).invoke(); });
 program
     .command('services-build')
-    .action(() => { (new ServicesBuildCommand(configService, systemService)).invoke(); });
+    .action(() => { (new ServicesBuildCommand(config, systemService)).invoke(); });
 program.parse();
 
 

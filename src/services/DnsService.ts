@@ -1,9 +1,9 @@
 import fs from "fs";
-import { ConfigService } from './ConfigService';
+import {ConfigDTO} from './ConfigService';
 import {DockerHostDTO, DockerHostService} from "./DockerHostService";
 
 export class DnsService {
-    constructor(private configService: ConfigService, private dockerHostService: DockerHostService) {
+    constructor(private config: ConfigDTO, private dockerHostService: DockerHostService) {
     }
 
     /**
@@ -27,7 +27,7 @@ export class DnsService {
      */
     generateGatewayConfigs(): void {
         console.log('Please specify nginx configs folder (0, 1 or 2)')
-        console.log('0) gateway - "' + this.configService.pathToGatewayProject() + '"')
+        console.log('0) gateway - "' + this.config.pathToGatewayProject + '"')
         console.log('1) mac - "/usr/local/etc/nginx/servers/"')
         console.log('2) linux - "/etc/nginx/sites-enabled/"')
         console.log('or just type custom path')
@@ -36,9 +36,9 @@ export class DnsService {
         let useDockerGateway = false;
 
         // if (gatewayConfigsPath === '0') {
-        //     gatewayConfigsPath = this.configService.pathToGatewayProject()
+        //     gatewayConfigsPath = this.config.pathToGatewayProject
         //     useDockerGateway = true;
-        //     IOService().create_directory_if_not_exists(this.configService.pathToGatewayProject())
+        //     IOService().create_directory_if_not_exists(this.config.pathToGatewayProject)
         // }
         //
         // if (gatewayConfigsPath === '1') {
