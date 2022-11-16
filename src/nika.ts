@@ -8,6 +8,7 @@ import {DnsService} from "./services/DnsService";
 import {ServicesUpCommand} from "./commands/ServicesUpCommand";
 import {ServicesDownCommand} from "./commands/ServicesDownCommand";
 import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
+import {ServicesInitCommand} from "./commands/ServicesInitCommand";
 
 const { program } = require("commander");
 const figlet = require("figlet");
@@ -36,6 +37,10 @@ program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
     .action(() => { (new DnsCommand(dnsService)).invoke(); });
+program
+    .command('services-init')
+    .description('Rebuild docker files in services folder')
+    .action(() => { (new ServicesInitCommand(config, systemService)).invoke(); });
 program
     .command('services-ps')
     .description('List all running docker containers')

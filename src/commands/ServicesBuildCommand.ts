@@ -7,11 +7,11 @@ export class ServicesBuildCommand {
 
     invoke(): void {
         if (this.config.fileSystem === FileSystem.MACOS_MUTAGEN) {
-            this.systemService.exec('mutagen-compose pull');
-            this.systemService.exec('mutagen-compose build');
+            this.systemService.execShellCommandSync('mutagen-compose pull');
+            this.systemService.execShellCommandSync('mutagen-compose build');
         } else {
-            this.systemService.exec('docker-compose pull');
-            this.systemService.exec('docker-compose build');
+            this.systemService.execShellCommandSync('docker-compose pull');
+            this.systemService.execShellCommandSync('docker-compose build');
         }
     }
 }

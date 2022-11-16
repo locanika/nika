@@ -7,9 +7,9 @@ export class ServicesDownCommand {
 
     invoke(): void {
         if (this.config.fileSystem === FileSystem.MACOS_MUTAGEN) {
-            this.systemService.exec('mutagen-compose down');
+            this.systemService.execShellCommandSync('mutagen-compose down');
         } else {
-            this.systemService.exec('docker-compose down');
+            this.systemService.execShellCommandSync('docker-compose down');
         }
     }
 }

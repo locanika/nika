@@ -9,10 +9,10 @@ class ServicesPsCommand {
     }
     invoke() {
         if (this.config.fileSystem === ConfigService_1.FileSystem.MACOS_MUTAGEN) {
-            this.systemService.exec('mutagen-compose ps');
+            this.systemService.execShellCommandSync('mutagen-compose ps');
         }
         else {
-            this.systemService.exec('docker-compose ps');
+            this.systemService.execShellCommandSync('docker-compose ps');
         }
     }
 }

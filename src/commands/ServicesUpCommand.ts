@@ -7,9 +7,9 @@ export class ServicesUpCommand {
 
     invoke(): void {
         if (this.config.fileSystem === FileSystem.MACOS_MUTAGEN) {
-            this.systemService.exec('mutagen-compose up -d')
+            this.systemService.execShellCommandSync('mutagen-compose up -d')
         } else {
-            this.systemService.exec('docker-compose up -d')
+            this.systemService.execShellCommandSync('docker-compose up -d')
         }
     }
 }
