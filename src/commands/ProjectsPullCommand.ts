@@ -1,5 +1,5 @@
-import {ConfigDTO, FileSystem, ProjectDTO} from "../services/ConfigService";
-import { SystemService } from "../services/SystemService";
+import {ConfigDTO, ProjectDTO} from "../services/ConfigService";
+import {SystemService} from "../services/SystemService";
 
 export class ProjectsPullCommand {
     constructor(private config: ConfigDTO, private systemService: SystemService) {

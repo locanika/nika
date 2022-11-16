@@ -1,5 +1,5 @@
 import {ConfigDTO, ProjectDTO} from "../services/ConfigService";
-import { SystemService } from "../services/SystemService";
+import {SystemService} from "../services/SystemService";
 import {FileSystemService} from "../services/FileSystemService";
 
 export class ProjectsInitCommand {

@@ -1,5 +1,5 @@
 import {ConfigDTO, FileSystem} from "../services/ConfigService";
-import { SystemService } from "../services/SystemService";
+import {SystemService} from "../services/SystemService";
 
 export class ServicesDownCommand {
     constructor(private config: ConfigDTO, private systemService: SystemService) {

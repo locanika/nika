@@ -4,7 +4,7 @@ exports.SystemService = void 0;
 const child_process_1 = require("child_process");
 class SystemService {
     execShellCommandSync(command) {
-        (0, child_process_1.execSync)(command);
+        console.log((0, child_process_1.execSync)(command).toString());
     }
 }
 exports.SystemService = SystemService;

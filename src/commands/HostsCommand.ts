@@ -1,4 +1,4 @@
-import { DockerService, DockerServiceDTO } from '../services/DockerService';
+import {DockerService, DockerServiceDTO} from '../services/DockerService';
 
 export class HostsCommand {
     dockerHostService: DockerService;
