@@ -30,6 +30,9 @@ class FileSystemService {
     createDirectorySync(dir) {
         fs_1.default.mkdirSync(dir, { recursive: true });
     }
+    existsSync(dir) {
+        return fs_1.default.existsSync(dir);
+    }
     readFileSync(path) {
         return fs_1.default.readFileSync(path, 'utf8');
     }

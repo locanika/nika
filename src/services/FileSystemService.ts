@@ -28,6 +28,10 @@ export class FileSystemService {
         fs.mkdirSync(dir, { recursive: true });
     }
 
+    existsSync(dir: string): boolean {
+        return fs.existsSync(dir);
+    }
+
     readFileSync(path: string): string {
         return fs.readFileSync(path, 'utf8');
     }

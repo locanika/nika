@@ -14,6 +14,7 @@ const ServicesInitCommand_1 = require("./commands/ServicesInitCommand");
 const TemplateService_1 = require("./services/TemplateService");
 const FileSystemService_1 = require("./services/FileSystemService");
 const ProjectsPullCommand_1 = require("./commands/ProjectsPullCommand");
+const ProjectsInitCommand_1 = require("./commands/ProjectsInitCommand");
 const { program } = require("commander");
 const figlet = require("figlet");
 const config = (new ConfigService_1.ConfigService()).build();
@@ -41,6 +42,10 @@ program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
     .action(() => { (new DnsCommand_1.DnsCommand(dnsService)).invoke(); });
+program
+    .command('projects-init')
+    .description('Clone all GIT repositories specified in projects list')
+    .action(() => { (new ProjectsInitCommand_1.ProjectsInitCommand(config, systemService, fileSystemService)).invoke(); });
 program
     .command('projects-pull')
     .description('Fetch latest changes from GIT repositories specified in projects list')
