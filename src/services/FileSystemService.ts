@@ -6,7 +6,6 @@ export class FileSystemService {
     constructor(private systemService: SystemService) {
     }
 
-    // TODO: move into FileSystemService
     * walkDirectorySync(dir: string): Generator<string> {
         const files = fs.readdirSync(dir, { withFileTypes: true });
         for (const file of files) {
