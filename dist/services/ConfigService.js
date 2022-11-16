@@ -36,6 +36,7 @@ class ConfigService {
             fileSystem: fileSystem,
             dockerMode: config['docker_mode'],
             servicesRestartPolicy: config['services_restart_policy'],
+            projects: config['projects'],
             enabledServices: config['enabled_services']
         };
     }

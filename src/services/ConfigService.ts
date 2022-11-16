@@ -19,6 +19,11 @@ export enum DockerMode {
     ROOT = 'root'
 }
 
+export interface ProjectDTO {
+    name: string,
+    src: string
+}
+
 export interface ConfigDTO {
     pathToDockerConfig: string,
     pathToGatewayProject: string,
@@ -26,6 +31,7 @@ export interface ConfigDTO {
     fileSystem: FileSystem,
     dockerMode: DockerMode,
     servicesRestartPolicy: string,
+    projects: ProjectDTO[],
     enabledServices: string[]
 }
 
@@ -46,6 +52,7 @@ export class ConfigService {
             fileSystem: fileSystem,
             dockerMode: config['docker_mode'],
             servicesRestartPolicy: config['services_restart_policy'],
+            projects: config['projects'],
             enabledServices: config['enabled_services']
         };
     }

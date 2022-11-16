@@ -11,6 +11,7 @@ import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
 import {ServicesInitCommand} from "./commands/ServicesInitCommand";
 import {TemplateService} from "./services/TemplateService";
 import {FileSystemService} from "./services/FileSystemService";
+import {ProjectsPullCommand} from "./commands/ProjectsPullCommand";
 
 const { program } = require("commander");
 const figlet = require("figlet");
@@ -41,6 +42,10 @@ program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
     .action(() => { (new DnsCommand(dnsService)).invoke(); });
+program
+    .command('projects-pull')
+    .description('Fetch latest changes from GIT repositories specified in projects list')
+    .action(() => { (new ProjectsPullCommand(config, systemService)).invoke(); });
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')

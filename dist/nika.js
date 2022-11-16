@@ -13,6 +13,7 @@ const ServicesBuildCommand_1 = require("./commands/ServicesBuildCommand");
 const ServicesInitCommand_1 = require("./commands/ServicesInitCommand");
 const TemplateService_1 = require("./services/TemplateService");
 const FileSystemService_1 = require("./services/FileSystemService");
+const ProjectsPullCommand_1 = require("./commands/ProjectsPullCommand");
 const { program } = require("commander");
 const figlet = require("figlet");
 const config = (new ConfigService_1.ConfigService()).build();
@@ -40,6 +41,10 @@ program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
     .action(() => { (new DnsCommand_1.DnsCommand(dnsService)).invoke(); });
+program
+    .command('projects-pull')
+    .description('Fetch latest changes from GIT repositories specified in projects list')
+    .action(() => { (new ProjectsPullCommand_1.ProjectsPullCommand(config, systemService)).invoke(); });
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')
