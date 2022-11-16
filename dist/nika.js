@@ -11,12 +11,16 @@ const ServicesUpCommand_1 = require("./commands/ServicesUpCommand");
 const ServicesDownCommand_1 = require("./commands/ServicesDownCommand");
 const ServicesBuildCommand_1 = require("./commands/ServicesBuildCommand");
 const ServicesInitCommand_1 = require("./commands/ServicesInitCommand");
+const TemplateService_1 = require("./services/TemplateService");
+const FileSystemService_1 = require("./services/FileSystemService");
 const { program } = require("commander");
 const figlet = require("figlet");
 const config = (new ConfigService_1.ConfigService()).build();
 const systemService = new SystemService_1.SystemService();
+const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
 const dockerService = new DockerService_1.DockerService(config);
 const dnsService = new DnsService_1.DnsService(config, dockerService);
+const templateService = new TemplateService_1.TemplateService(config, fileSystemService);
 program
     .name('nika')
     .addHelpText('beforeAll', figlet.textSync("Localenv Nika"))
@@ -39,7 +43,7 @@ program
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')
-    .action(() => { (new ServicesInitCommand_1.ServicesInitCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesInitCommand_1.ServicesInitCommand(templateService)).invoke(); });
 program
     .command('services-ps')
     .description('List all running docker containers')

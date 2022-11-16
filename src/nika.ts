@@ -9,14 +9,18 @@ import {ServicesUpCommand} from "./commands/ServicesUpCommand";
 import {ServicesDownCommand} from "./commands/ServicesDownCommand";
 import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
 import {ServicesInitCommand} from "./commands/ServicesInitCommand";
+import {TemplateService} from "./services/TemplateService";
+import {FileSystemService} from "./services/FileSystemService";
 
 const { program } = require("commander");
 const figlet = require("figlet");
 
 const config = (new ConfigService()).build();
 const systemService = new SystemService();
+const fileSystemService = new FileSystemService(systemService);
 const dockerService = new DockerService(config);
 const dnsService = new DnsService(config, dockerService);
+const templateService = new TemplateService(config, fileSystemService);
 
 program
     .name('nika')
@@ -40,7 +44,7 @@ program
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')
-    .action(() => { (new ServicesInitCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesInitCommand(templateService)).invoke(); });
 program
     .command('services-ps')
     .description('List all running docker containers')
