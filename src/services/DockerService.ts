@@ -6,7 +6,7 @@ const nunjucks = require('nunjucks')
 
 export interface DockerServiceDTO {
     enabled: boolean,
-    domain: string,
+    domains: string[],
     dockerHost: string,
     dockerPort: string
     externalHost: string,
@@ -26,26 +26,18 @@ export class DockerService {
         for (const serviceName in rawServices) {
             const serviceData = rawServices[serviceName];
             let serviceDomains = serviceData.environment?.DOMAINS;
+            let servicePorts = serviceData?.ports;
 
-            if (!serviceDomains) {
-                continue;
-            }
-
-            serviceDomains = serviceDomains.split(',');
-
-            for (const key in serviceDomains) {
-                const serviceDomain = serviceDomains[key];
-                result.push({
-                    enabled: this.config.enabledServices.includes(serviceName),
-                    domain: serviceDomain,
-                    dockerHost: serviceName,
-                    dockerPort: serviceData.ports[0].split(':')[1],
-                    externalHost: '127.0.0.1',
-                    externalPort: serviceData.ports[0].split(':')[0],
-                    corsEnabled: !!serviceData.environment?.BACKEND_API_CORS,
-                    raw: serviceData
-                })
-            }
+            result.push({
+                enabled: this.config.enabledServices.includes(serviceName),
+                domains: !!serviceDomains ? serviceDomains.split(',') : [],
+                dockerHost: serviceName,
+                dockerPort: servicePorts ? servicePorts[0].split(':')[1] : '',
+                externalHost: '127.0.0.1',
+                externalPort: servicePorts ? servicePorts[0].split(':')[0] : '',
+                corsEnabled: !!serviceData.environment?.BACKEND_API_CORS,
+                raw: serviceData
+            })
         }
         return result;
     }

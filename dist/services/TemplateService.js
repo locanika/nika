@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TemplateService = void 0;
 const nunjucks_1 = __importDefault(require("nunjucks"));
+const fs_1 = __importDefault(require("fs"));
 class TemplateService {
-    constructor(config, fileSystemService) {
+    constructor(config, fileSystemService, dockerService) {
         this.config = config;
         this.fileSystemService = fileSystemService;
+        this.dockerService = dockerService;
     }
     removeServicesFolder() {
         this.fileSystemService.removeDirectorySync('./services');
@@ -18,6 +20,15 @@ class TemplateService {
         for (const templatePath of this.fileSystemService.walkDirectorySync('./templates/services')) {
             this.processServiceTemplate(templatePath);
         }
+    }
+    processMakefileTemplates() {
+        let makefile = '';
+        this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
+            makefile += nunjucks_1.default.renderString(fs_1.default.readFileSync('./templates/Makefile.j2', 'utf8'), {
+                project: host.dockerHost
+            });
+        });
+        this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
     processServiceTemplate(templatePath) {
         // Skip macos specific files

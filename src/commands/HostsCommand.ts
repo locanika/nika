@@ -9,15 +9,19 @@ export class HostsCommand {
 
     public invoke(): void {
         this.dockerHostService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
-            console.log(`${this.printHostDetails(host)}`);
+            host.domains.forEach((domain: string) => {
+                console.log(`${this.printHostDetails(host, domain)}`);
+            });
         });
 
         this.dockerHostService.listingAll().filter(x => !x.enabled).forEach((host: DockerServiceDTO) => {
-            console.log(`[DISABLED] ${this.printHostDetails(host)}`);
+            host.domains.forEach((domain: string) => {
+                console.log(`[DISABLED] ${this.printHostDetails(host, domain)}`);
+            });
         });
     }
 
-    public printHostDetails(host: DockerServiceDTO): string {
-        return `http://${host.externalHost}:${host.externalPort} | http://${host.domain}`;
+    public printHostDetails(host: DockerServiceDTO, domain: string ): string {
+        return `http://${host.externalHost}:${host.externalPort} | http://${domain}`;
     }
 }

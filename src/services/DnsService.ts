@@ -22,9 +22,11 @@ export class DnsService {
         let etcHosts = fs.readFileSync('/etc/hosts', 'utf8');
 
         this.dockerService.listingAll().forEach(function (host: DockerServiceDTO) {
-            if (!etcHosts.includes(host.domain)) {
-                etcHosts += "127.0.0.1 " + host.domain + "\n"
-            }
+            host.domains.forEach((domain: string) => {
+                if (!etcHosts.includes(domain)) {
+                    etcHosts += "127.0.0.1 " + domain + "\n"
+                }
+            });
         });
 
         fs.writeFileSync('/etc/hosts', etcHosts);
@@ -83,16 +85,18 @@ export class DnsService {
             proxyPath = host.dockerHost + ':' + host.dockerPort;
         }
 
-        const gatewayConfigPath = gatewayConfigsPath + host.domain + '.conf';
-        const gatewayConfig =  nunjucks.renderString(
-            fs.readFileSync('./templates/nginx_proxy.conf', 'utf8'), {
-                host: host,
-                proxy_path: proxyPath,
-                cors_enabled: host.corsEnabled
-            }
-        );
+        host.domains.forEach((domain: string) => {
+            const gatewayConfigPath = gatewayConfigsPath + domain + '.conf';
+            const gatewayConfig =  nunjucks.renderString(
+                fs.readFileSync('./templates/nginx_proxy.conf', 'utf8'), {
+                    host: host,
+                    proxy_path: proxyPath,
+                    cors_enabled: host.corsEnabled
+                }
+            );
 
-        fs.writeFileSync(gatewayConfigPath, gatewayConfig);
-        console.log("Created file: " + gatewayConfigPath)
+            fs.writeFileSync(gatewayConfigPath, gatewayConfig);
+            console.log("Created file: " + gatewayConfigPath)
+        });
     }
 }

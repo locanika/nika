@@ -22,7 +22,7 @@ const systemService = new SystemService();
 const fileSystemService = new FileSystemService(systemService);
 const dockerService = new DockerService(config);
 const dnsService = new DnsService(config, dockerService);
-const templateService = new TemplateService(config, fileSystemService);
+const templateService = new TemplateService(config, fileSystemService, dockerService);
 
 program
     .name('nika')

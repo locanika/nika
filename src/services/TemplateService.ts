@@ -1,9 +1,15 @@
 import nunjucks from "nunjucks";
 import {ConfigDTO} from "./ConfigService";
 import {FileSystemService} from "./FileSystemService";
+import {DockerService, DockerServiceDTO} from "./DockerService";
+import fs from "fs";
 
 export class TemplateService {
-    constructor(private config: ConfigDTO, private fileSystemService: FileSystemService) {
+    constructor(
+        private config: ConfigDTO,
+        private fileSystemService: FileSystemService,
+        private dockerService: DockerService
+    ) {
     }
 
     removeServicesFolder(): void {
@@ -15,6 +21,18 @@ export class TemplateService {
         for (const templatePath of this.fileSystemService.walkDirectorySync('./templates/services')) {
             this.processServiceTemplate(templatePath);
         }
+    }
+
+    processMakefileTemplates(): void {
+        let makefile = '';
+        this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
+            makefile += nunjucks.renderString(
+                fs.readFileSync('./templates/Makefile.j2', 'utf8'), {
+                    project: host.dockerHost
+                }
+            );
+        });
+        this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
 
     private processServiceTemplate(templatePath: string): void {

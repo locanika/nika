@@ -7,5 +7,6 @@ export class ServicesInitCommand {
     invoke(): void {
         this.templateService.removeServicesFolder();
         this.templateService.processServiceTemplates();
+        this.templateService.processMakefileTemplates();
     }
 }

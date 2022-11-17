@@ -10,7 +10,6 @@ class FileSystemService {
     constructor(systemService) {
         this.systemService = systemService;
     }
-    // TODO: move into FileSystemService
     *walkDirectorySync(dir) {
         const files = fs_1.default.readdirSync(dir, { withFileTypes: true });
         for (const file of files) {

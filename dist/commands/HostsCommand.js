@@ -7,14 +7,18 @@ class HostsCommand {
     }
     invoke() {
         this.dockerHostService.listingAll().filter(x => x.enabled).forEach((host) => {
-            console.log(`${this.printHostDetails(host)}`);
+            host.domains.forEach((domain) => {
+                console.log(`${this.printHostDetails(host, domain)}`);
+            });
         });
         this.dockerHostService.listingAll().filter(x => !x.enabled).forEach((host) => {
-            console.log(`[DISABLED] ${this.printHostDetails(host)}`);
+            host.domains.forEach((domain) => {
+                console.log(`[DISABLED] ${this.printHostDetails(host, domain)}`);
+            });
         });
     }
-    printHostDetails(host) {
-        return `http://${host.externalHost}:${host.externalPort} | http://${host.domain}`;
+    printHostDetails(host, domain) {
+        return `http://${host.externalHost}:${host.externalPort} | http://${domain}`;
     }
 }
 exports.HostsCommand = HostsCommand;

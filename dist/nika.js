@@ -22,7 +22,7 @@ const systemService = new SystemService_1.SystemService();
 const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
 const dockerService = new DockerService_1.DockerService(config);
 const dnsService = new DnsService_1.DnsService(config, dockerService);
-const templateService = new TemplateService_1.TemplateService(config, fileSystemService);
+const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService);
 program
     .name('nika')
     .addHelpText('beforeAll', figlet.textSync("Localenv Nika"))
