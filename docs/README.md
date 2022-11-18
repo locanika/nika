@@ -139,7 +139,7 @@ make {project}-logs|Show logs for Project's node container
 ## Repository structure
 
 ```
-projects - source code of gitlab projects
+projects - source code of git projects (fetched from gitlab, github, etc) 
 scripts - localenv system python scripts
 services - auto-generated folder with docker configs for each project
 templates - templates for services folder generation

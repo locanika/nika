@@ -10,4 +10,4 @@ npm install locanika
 
 ## Documentation
 
-Can be found here - https://locanika.github.io/
+Can be found here - https://locanika.github.io/nika/
