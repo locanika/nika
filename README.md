@@ -2,6 +2,12 @@
 
 This repository contains docker configurations for local development.
 
+## Install locanika
+
+```
+npm install locanika
+```
+
 ## Initial setup on MacOS
 
 When you use localenv at the first time try install it without any additional file system (see "MacOS by default"). If it will be slow you can try use latest MacOS docker and mutagen.
