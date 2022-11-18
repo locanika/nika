@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const NginxProxyTemplate = `    
 server {
     listen 80;
 
@@ -29,4 +32,6 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }
-}
+}`;
+exports.default = NginxProxyTemplate;
+//# sourceMappingURL=NginxProxyTemplate.js.map

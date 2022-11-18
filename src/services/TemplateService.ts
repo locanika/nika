@@ -2,7 +2,7 @@ import nunjucks from "nunjucks";
 import {ConfigDTO} from "./ConfigService";
 import {FileSystemService} from "./FileSystemService";
 import {DockerService, DockerServiceDTO} from "./DockerService";
-import fs from "fs";
+import MakefileTemplate from "./../templates/MakefileTemplate";
 
 export class TemplateService {
     constructor(
@@ -26,11 +26,7 @@ export class TemplateService {
     processMakefileTemplates(): void {
         let makefile = '';
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
-            makefile += nunjucks.renderString(
-                fs.readFileSync('./templates/Makefile.j2', 'utf8'), {
-                    project: host.dockerHost
-                }
-            );
+            makefile += nunjucks.renderString(MakefileTemplate, { project: host.dockerHost });
         });
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }

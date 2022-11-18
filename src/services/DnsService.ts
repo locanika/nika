@@ -1,6 +1,7 @@
 import fs from "fs";
 import {ConfigDTO} from './ConfigService';
 import {DockerService, DockerServiceDTO} from "./DockerService";
+import NginxProxyTemplate from "./../templates/NginxProxyTemplate";
 
 const nunjucks = require('nunjucks')
 const readline = require('readline');
@@ -88,7 +89,7 @@ export class DnsService {
         host.domains.forEach((domain: string) => {
             const gatewayConfigPath = gatewayConfigsPath + domain + '.conf';
             const gatewayConfig =  nunjucks.renderString(
-                fs.readFileSync('./templates/nginx_proxy.conf', 'utf8'), {
+                NginxProxyTemplate, {
                     host: host,
                     proxy_path: proxyPath,
                     cors_enabled: host.corsEnabled

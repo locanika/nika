@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TemplateService = void 0;
 const nunjucks_1 = __importDefault(require("nunjucks"));
-const fs_1 = __importDefault(require("fs"));
+const MakefileTemplate_1 = __importDefault(require("./../templates/MakefileTemplate"));
 class TemplateService {
     constructor(config, fileSystemService, dockerService) {
         this.config = config;
@@ -24,9 +24,7 @@ class TemplateService {
     processMakefileTemplates() {
         let makefile = '';
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
-            makefile += nunjucks_1.default.renderString(fs_1.default.readFileSync('./templates/Makefile.j2', 'utf8'), {
-                project: host.dockerHost
-            });
+            makefile += nunjucks_1.default.renderString(MakefileTemplate_1.default, { project: host.dockerHost });
         });
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }

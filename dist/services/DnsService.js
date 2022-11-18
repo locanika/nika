@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DnsService = exports.GatewayConfigsPath = void 0;
 const fs_1 = __importDefault(require("fs"));
+const NginxProxyTemplate_1 = __importDefault(require("./../templates/NginxProxyTemplate"));
 const nunjucks = require('nunjucks');
 const readline = require('readline');
 var GatewayConfigsPath;
@@ -76,7 +77,7 @@ class DnsService {
         }
         host.domains.forEach((domain) => {
             const gatewayConfigPath = gatewayConfigsPath + domain + '.conf';
-            const gatewayConfig = nunjucks.renderString(fs_1.default.readFileSync('./templates/nginx_proxy.conf', 'utf8'), {
+            const gatewayConfig = nunjucks.renderString(NginxProxyTemplate_1.default, {
                 host: host,
                 proxy_path: proxyPath,
                 cors_enabled: host.corsEnabled
