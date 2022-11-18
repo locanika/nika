@@ -17,6 +17,12 @@ When you use localenv at the first time try install it without any additional fi
 node --version
 ```
 
+Then install nika into your localenv folder:
+
+```
+npm i
+```
+
 ### MacOS + Mutagen
 
 - If You installed the latest version of Docker and want to use Mutagen anyway.
@@ -51,7 +57,13 @@ export PATH=/usr/bin:$PATH
 export DOCKER_HOST=unix:///run/user/1000/docker.sock
 ```
 - Install nodejs (https://nodejs.org/en/)
-- Run
+- Then install nika into your localenv folder:
+
+```
+npm i
+```
+
+- Configure you projects:
 ```
 make services-init
 make projects-init
