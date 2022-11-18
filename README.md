@@ -48,9 +48,7 @@ Any improvements/benchmarks are welcome.
 
 ## Initial setup on Ubuntu
 
-**
-Please carefully check section about `Setup DNS` because for `gateway` option docker in Rootless mode will not work!
-**
+**Please carefully check section about `Setup DNS` because for `gateway` option docker in Rootless mode will not work!**
 - Install `docker` in Rootless (https://docs.docker.com/engine/security/rootless/) or default mode and `docker-compose`. Make sure the following environment variables are added int ~/.bashrc for Rootless mode (see output of install script for details):
 ```
 export PATH=/usr/bin:$PATH
