@@ -3,6 +3,9 @@ import {ConfigDTO} from "./ConfigService";
 import {FileSystemService} from "./FileSystemService";
 import {DockerService, DockerServiceDTO} from "./DockerService";
 import MakefileTemplate from "./../templates/MakefileTemplate";
+import ExampleMakefileTemplate from "./../templates/ExampleMakefileTemplate";
+import ExampleConfigTemplate from "./../templates/ExampleConfigTemplate";
+import ExampleGitignoreTemplate from "./../templates/ExampleGitignoreTemplate";
 
 export class TemplateService {
     constructor(
@@ -29,6 +32,21 @@ export class TemplateService {
             makefile += nunjucks.renderString(MakefileTemplate, { project: host.dockerHost });
         });
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
+    }
+
+    generateExampleMakefile(): void {
+        let content = nunjucks.renderString(ExampleMakefileTemplate, { });
+        this.fileSystemService.writeFileSync('/var/www/localenv/services/example/Makefile', content);
+    }
+
+    generateExampleConfig(): void {
+        let content = nunjucks.renderString(ExampleConfigTemplate, { });
+        this.fileSystemService.writeFileSync('/var/www/localenv/services/example/config.yml', content);
+    }
+
+    generateExampleGitignore(): void {
+        let content = nunjucks.renderString(ExampleGitignoreTemplate, { });
+        this.fileSystemService.writeFileSync('/var/www/localenv/services/example/.gitignore', content);
     }
 
     private processServiceTemplate(templatePath: string): void {

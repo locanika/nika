@@ -36,7 +36,18 @@ export interface ConfigDTO {
 
 export class ConfigService {
     public build(): ConfigDTO {
-        let config = yaml.load(fs.readFileSync('./config.yml', 'utf8'));
+        let config = {
+            os_name: null,
+            file_system: null,
+            docker_mode: DockerMode.ROOT,
+            services_restart_policy: 'always',
+            projects: [],
+            enabled_services: []
+        };
+
+        if (fs.existsSync('./config.local.yml')) {
+            config = { ...config, ...yaml.load(fs.readFileSync('./config.yml', 'utf8')) };
+        }
         if (fs.existsSync('./config.local.yml')) {
             config = { ...config, ...yaml.load(fs.readFileSync('./config.local.yml', 'utf8')) };
         }

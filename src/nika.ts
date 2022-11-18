@@ -13,6 +13,7 @@ import {TemplateService} from "./services/TemplateService";
 import {FileSystemService} from "./services/FileSystemService";
 import {ProjectsPullCommand} from "./commands/ProjectsPullCommand";
 import {ProjectsInitCommand} from "./commands/ProjectsInitCommand";
+import {InitCommand} from "./commands/InitCommand";
 
 const { program } = require("commander");
 const figlet = require("figlet");
@@ -35,6 +36,10 @@ Service Commands:
   PROJECT-build    Build PROJECT container
     `)
     .description('Small Docker Dev Environment');
+program
+    .command('init')
+    .description('Init locanika configs for new project')
+    .action(() => { (new InitCommand(templateService, systemService)).invoke(); });
 program
     .command('hosts')
     .description('List all services with URL-s')

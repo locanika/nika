@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TemplateService = void 0;
 const nunjucks_1 = __importDefault(require("nunjucks"));
 const MakefileTemplate_1 = __importDefault(require("./../templates/MakefileTemplate"));
+const ExampleMakefileTemplate_1 = __importDefault(require("./../templates/ExampleMakefileTemplate"));
+const ExampleConfigTemplate_1 = __importDefault(require("./../templates/ExampleConfigTemplate"));
+const ExampleGitignoreTemplate_1 = __importDefault(require("./../templates/ExampleGitignoreTemplate"));
 class TemplateService {
     constructor(config, fileSystemService, dockerService) {
         this.config = config;
@@ -27,6 +30,18 @@ class TemplateService {
             makefile += nunjucks_1.default.renderString(MakefileTemplate_1.default, { project: host.dockerHost });
         });
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
+    }
+    generateExampleMakefile() {
+        let content = nunjucks_1.default.renderString(ExampleMakefileTemplate_1.default, {});
+        this.fileSystemService.writeFileSync('/var/www/localenv/services/example/Makefile', content);
+    }
+    generateExampleConfig() {
+        let content = nunjucks_1.default.renderString(ExampleConfigTemplate_1.default, {});
+        this.fileSystemService.writeFileSync('/var/www/localenv/services/example/config.yml', content);
+    }
+    generateExampleGitignore() {
+        let content = nunjucks_1.default.renderString(ExampleGitignoreTemplate_1.default, {});
+        this.fileSystemService.writeFileSync('/var/www/localenv/services/example/.gitignore', content);
     }
     processServiceTemplate(templatePath) {
         // Skip macos specific files
