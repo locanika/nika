@@ -126,8 +126,8 @@ sudo make dns|Configure local nginx and /etc/hosts for human named services
 
 Project-related Service Commands|Description
 ----|---
-make {project}-ssh|Connect to Project's PHP docker container
-make {project}-restart|Restart Project's PHP docker container
+make {project}-ssh|Connect to Project's docker container
+make {project}-restart|Restart Project's docker container
 make {project}-logs|Show logs for Project's node container
 
 ## Repository structure
