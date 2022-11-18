@@ -14,7 +14,6 @@ var FileSystem;
     FileSystem["LINUX_DEFAULT"] = "linux_default";
     FileSystem["MACOS_DEFAULT"] = "macos_default";
     FileSystem["MACOS_MUTAGEN"] = "macos_mutagen";
-    FileSystem["MACOS_NFS"] = "macos_nfs";
 })(FileSystem = exports.FileSystem || (exports.FileSystem = {}));
 var DockerMode;
 (function (DockerMode) {

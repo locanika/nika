@@ -10,8 +10,7 @@ export enum OsName {
 export enum FileSystem {
     LINUX_DEFAULT = 'linux_default',
     MACOS_DEFAULT = 'macos_default',
-    MACOS_MUTAGEN = 'macos_mutagen',
-    MACOS_NFS = 'macos_nfs'
+    MACOS_MUTAGEN = 'macos_mutagen'
 }
 
 export enum DockerMode {
