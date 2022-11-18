@@ -4,7 +4,6 @@ const MakefileTemplate = `
 {{ project }}-ssh:
 \tdocker-compose exec {{ project }} /bin/bash
 
-
 {{ project }}-stop:
 \tdocker-compose stop {{ project }}
 
@@ -14,7 +13,6 @@ const MakefileTemplate = `
 
 {{ project }}-logs:
 \tdocker-compose logs --follow {{ project }}
-
 
 {{ project }}-build:
 \tdocker-compose build {{ project }}
