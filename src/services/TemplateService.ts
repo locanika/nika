@@ -50,7 +50,7 @@ export class TemplateService {
             return;
         }
 
-        const servicePath = templatePath.replace("templates/", "./");
+        const servicePath = templatePath.replace("templates/", "./services/");
         nunjucks.configure('./templates/')
         let template = nunjucks.renderString(
             this.fileSystemService.readFileSync(templatePath), {
