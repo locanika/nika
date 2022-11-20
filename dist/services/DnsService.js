@@ -49,7 +49,6 @@ class DnsService {
         let self = this;
         rl.question("or just type custom path\n", function (gatewayConfigsPath) {
             rl.close();
-            gatewayConfigsPath = self.getGatewayConfigsPath(gatewayConfigsPath);
             self.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
@@ -76,9 +75,9 @@ class DnsService {
             proxyPath = host.dockerHost + ':' + host.dockerPort;
         }
         host.domains.forEach((domain) => {
-            const gatewayConfigPath = gatewayConfigsPath + domain + '.conf';
+            const gatewayConfigPath = this.getGatewayConfigsPath(gatewayConfigsPath) + domain + '.conf';
             const gatewayConfig = nunjucks.renderString(NginxProxyTemplate_1.default, {
-                host: host,
+                host: domain,
                 proxy_path: proxyPath,
                 cors_enabled: host.corsEnabled
             });

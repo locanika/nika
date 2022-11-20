@@ -28,12 +28,21 @@ class TemplateService {
         });
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
+    processDockerComposeTemplate() {
+        let content = nunjucks_1.default.renderString(this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
+            os_name: this.config.osName,
+            file_system: this.config.fileSystem,
+            docker_mode: this.config.dockerMode,
+            services_restart_policy: this.config.servicesRestartPolicy
+        });
+        this.fileSystemService.writeFileSync('./docker-compose.yml', content);
+    }
     processServiceTemplate(templatePath) {
         // Skip macos specific files
         if (templatePath.includes('DS_Store')) {
             return;
         }
-        const servicePath = templatePath.replace("templates/", "./");
+        const servicePath = templatePath.replace("templates/", "./services/");
         nunjucks_1.default.configure('./templates/');
         let template = nunjucks_1.default.renderString(this.fileSystemService.readFileSync(templatePath), {
             os_name: this.config.osName

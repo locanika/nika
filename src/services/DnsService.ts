@@ -52,7 +52,6 @@ export class DnsService {
 
         rl.question("or just type custom path\n", function(gatewayConfigsPath: string) {
             rl.close();
-            gatewayConfigsPath = self.getGatewayConfigsPath(gatewayConfigsPath);
             self.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
@@ -62,7 +61,6 @@ export class DnsService {
     private getGatewayConfigsPath(gatewayConfigsPath: string): string {
         if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
             gatewayConfigsPath = this.config.pathToGatewayProject
-
         }
 
         if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_MACOS) {
@@ -87,10 +85,10 @@ export class DnsService {
         }
 
         host.domains.forEach((domain: string) => {
-            const gatewayConfigPath = gatewayConfigsPath + domain + '.conf';
+            const gatewayConfigPath = this.getGatewayConfigsPath(gatewayConfigsPath) + domain + '.conf';
             const gatewayConfig =  nunjucks.renderString(
                 NginxProxyTemplate, {
-                    host: host,
+                    host: domain,
                     proxy_path: proxyPath,
                     cors_enabled: host.corsEnabled
                 }

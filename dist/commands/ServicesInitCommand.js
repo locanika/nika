@@ -9,6 +9,7 @@ class ServicesInitCommand {
         this.templateService.removeServicesFolder();
         this.templateService.processServiceTemplates();
         this.templateService.processMakefileTemplates();
+        this.templateService.processDockerComposeTemplate();
     }
 }
 exports.ServicesInitCommand = ServicesInitCommand;
