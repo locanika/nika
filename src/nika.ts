@@ -39,7 +39,11 @@ Service Commands:
 program
     .command('init')
     .description('Init locanika configs for new project')
-    .action(() => { (new InitCommand(templateService, systemService)).invoke(); });
+    .action(() => {
+        (new InitCommand(templateService, systemService, fileSystemService)).invoke();
+        // (new ServicesInitCommand(templateService)).invoke();
+        // (new ServicesUpCommand(config, systemService)).invoke();
+    });
 program
     .command('hosts')
     .description('List all services with URL-s')

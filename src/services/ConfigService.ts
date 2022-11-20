@@ -45,7 +45,7 @@ export class ConfigService {
             enabled_services: []
         };
 
-        if (fs.existsSync('./config.local.yml')) {
+        if (fs.existsSync('./config.yml')) {
             config = { ...config, ...yaml.load(fs.readFileSync('./config.yml', 'utf8')) };
         }
         if (fs.existsSync('./config.local.yml')) {

@@ -8,6 +8,7 @@ class ProjectsInitCommand {
         this.fileSystemService = fileSystemService;
     }
     invoke() {
+        console.log(this.config.projects);
         this.config.projects.forEach((project) => {
             if (!this.fileSystemService.existsSync(`./projects/${project.name}`)) {
                 this.systemService.execShellCommandSync(`git clone ${project.src} ./projects/${project.name}`);

@@ -11,6 +11,7 @@ export class ProjectsInitCommand {
     }
 
     invoke(): void {
+        console.log(this.config.projects)
         this.config.projects.forEach((project: ProjectDTO) => {
             if (!this.fileSystemService.existsSync(`./projects/${project.name}`)) {
                 this.systemService.execShellCommandSync(`git clone ${project.src} ./projects/${project.name}`);

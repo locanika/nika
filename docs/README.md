@@ -2,6 +2,20 @@
 
 This repository contains docker configurations for local development.
 
+## Getting Started
+
+```
+npm install locanika
+node ./node_modules/locanika/dist/nika.js init
+sudo node ./node_modules/locanika/dist/nika.js dns
+```
+
+After that you will get example configuration for your local environment and a new local domain will available:
+
+```
+http://nika.lo
+```
+
 ## Install locanika
 
 ```

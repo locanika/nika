@@ -30,7 +30,7 @@ class ConfigService {
             projects: [],
             enabled_services: []
         };
-        if (fs.existsSync('./config.local.yml')) {
+        if (fs.existsSync('./config.yml')) {
             config = Object.assign(Object.assign({}, config), yaml.load(fs.readFileSync('./config.yml', 'utf8')));
         }
         if (fs.existsSync('./config.local.yml')) {
