@@ -31,6 +31,19 @@ export class TemplateService {
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
 
+    processDockerComposeTemplate(): void {
+        let content = nunjucks.renderString(
+            this.fileSystemService.readFileSync('./templates/docker-compose.j2'),
+            {
+                os_name: this.config.osName,
+                file_system: this.config.fileSystem,
+                docker_mode: this.config.dockerMode,
+                services_restart_policy: this.config.servicesRestartPolicy
+            }
+        );
+        this.fileSystemService.writeFileSync('./docker-compose.yml', content);
+    }
+
     private processServiceTemplate(templatePath: string): void {
         // Skip macos specific files
         if (templatePath.includes('DS_Store')) {
