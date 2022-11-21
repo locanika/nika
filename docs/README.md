@@ -5,7 +5,7 @@ This repository contains docker configurations for local development.
 ## Getting Started
 
 ```
-git clone git@github.com:locanika/demo.git .
+git clone https://github.com/locanika/demo.git .
 npm i
 make services-init
 make projects-init
