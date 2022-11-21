@@ -4,6 +4,8 @@ import {FileSystemService} from "./FileSystemService";
 import {DockerService, DockerServiceDTO} from "./DockerService";
 import MakefileTemplate from "./../templates/MakefileTemplate";
 
+const yaml = require('js-yaml');
+
 export class TemplateService {
     constructor(
         private config: ConfigDTO,
@@ -32,16 +34,12 @@ export class TemplateService {
     }
 
     processDockerComposeTemplate(): void {
-        let content = nunjucks.renderString(
-            this.fileSystemService.readFileSync('./templates/docker-compose.j2'),
-            {
-                os_name: this.config.osName,
-                file_system: this.config.fileSystem,
-                docker_mode: this.config.dockerMode,
-                services_restart_policy: this.config.servicesRestartPolicy
-            }
-        );
-        this.fileSystemService.writeFileSync('./docker-compose.yml', content);
+        let  dockerCompose = { } as any;
+        dockerCompose.version = '3';
+        this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
+            dockerCompose.services.push(host.raw);
+        });
+        this.fileSystemService.writeFileSync('./docker-compose.yml', yaml.dump(dockerCompose));
     }
 
     private processServiceTemplate(templatePath: string): void {

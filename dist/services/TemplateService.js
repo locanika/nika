@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TemplateService = void 0;
 const nunjucks_1 = __importDefault(require("nunjucks"));
 const MakefileTemplate_1 = __importDefault(require("./../templates/MakefileTemplate"));
+const yaml = require('js-yaml');
 class TemplateService {
     constructor(config, fileSystemService, dockerService) {
         this.config = config;
@@ -29,13 +30,12 @@ class TemplateService {
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
     processDockerComposeTemplate() {
-        let content = nunjucks_1.default.renderString(this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
-            os_name: this.config.osName,
-            file_system: this.config.fileSystem,
-            docker_mode: this.config.dockerMode,
-            services_restart_policy: this.config.servicesRestartPolicy
+        let dockerCompose = {};
+        dockerCompose.version = '3';
+        this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
+            dockerCompose.services.push(host.raw);
         });
-        this.fileSystemService.writeFileSync('./docker-compose.yml', content);
+        this.fileSystemService.writeFileSync('./docker-compose.yml', yaml.dump(dockerCompose));
     }
     processServiceTemplate(templatePath) {
         // Skip macos specific files
