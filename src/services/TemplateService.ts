@@ -36,9 +36,9 @@ export class TemplateService {
     processDockerComposeTemplate(): void {
         let  dockerCompose = { } as any;
         dockerCompose.version = '3';
-        dockerCompose.services = [];
+        dockerCompose.services = {};
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
-            dockerCompose.services.push(host.raw);
+            dockerCompose.services[host.dockerHost] = host.raw;
         });
         this.fileSystemService.writeFileSync('./docker-compose.yml', yaml.dump(dockerCompose));
     }
