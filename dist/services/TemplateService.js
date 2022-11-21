@@ -32,6 +32,7 @@ class TemplateService {
     processDockerComposeTemplate() {
         let dockerCompose = {};
         dockerCompose.version = '3';
+        dockerCompose.services = [];
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
             dockerCompose.services.push(host.raw);
         });
