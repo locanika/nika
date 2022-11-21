@@ -40,9 +40,10 @@ program
     .command('init')
     .description('Init locanika configs for new project')
     .action(() => {
-        (new InitCommand(templateService, systemService, fileSystemService)).invoke();
-        // (new ServicesInitCommand(templateService)).invoke();
-        // (new ServicesUpCommand(config, systemService)).invoke();
+        (new InitCommand(templateService, systemService)).invoke();
+        (new ServicesInitCommand(templateService)).invoke();
+        (new ProjectsInitCommand(config, systemService, fileSystemService)).invoke();
+        (new ServicesUpCommand(config, systemService)).invoke();
     });
 program
     .command('hosts')
