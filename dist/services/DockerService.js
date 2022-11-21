@@ -11,7 +11,7 @@ class DockerService {
     listingAll() {
         var _a, _b;
         const result = [];
-        const rawServices = this.rawServicesListing();
+        const rawServices = this.rawData()['services'];
         for (const serviceName in rawServices) {
             const serviceData = rawServices[serviceName];
             let serviceDomains = (_a = serviceData.environment) === null || _a === void 0 ? void 0 : _a.DOMAINS;
@@ -29,14 +29,14 @@ class DockerService {
         }
         return result;
     }
-    rawServicesListing() {
+    rawData() {
         const dockerCompose = nunjucks.renderString(fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
             os_name: this.config.osName,
             file_system: this.config.fileSystem,
             docker_mode: this.config.dockerMode,
             services_restart_policy: this.config.servicesRestartPolicy
         });
-        return yaml.load(dockerCompose)['services'];
+        return yaml.load(dockerCompose);
     }
 }
 exports.DockerService = DockerService;

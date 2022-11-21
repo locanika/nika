@@ -30,8 +30,7 @@ class TemplateService {
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
     processDockerComposeTemplate() {
-        let dockerCompose = {};
-        dockerCompose.version = '3';
+        let dockerCompose = this.dockerService.rawData();
         dockerCompose.services = {};
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
             dockerCompose.services[host.dockerHost] = host.raw;
