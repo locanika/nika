@@ -11,6 +11,7 @@ make services-init
 make projects-init
 make services-deploy
 sudo make dns
+make nika-gateway-restart
 ```
 
 After that you will get example configuration for your local environment and a new local domain will available:
