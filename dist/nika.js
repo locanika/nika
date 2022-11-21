@@ -15,7 +15,6 @@ const TemplateService_1 = require("./services/TemplateService");
 const FileSystemService_1 = require("./services/FileSystemService");
 const ProjectsPullCommand_1 = require("./commands/ProjectsPullCommand");
 const ProjectsInitCommand_1 = require("./commands/ProjectsInitCommand");
-const InitCommand_1 = require("./commands/InitCommand");
 const { program } = require("commander");
 const figlet = require("figlet");
 const config = (new ConfigService_1.ConfigService()).build();
@@ -35,10 +34,6 @@ Service Commands:
   PROJECT-build    Build PROJECT container
     `)
     .description('Small Docker Dev Environment');
-program
-    .command('init')
-    .description('Init locanika configs for new project')
-    .action(() => { (new InitCommand_1.InitCommand(templateService, systemService)).invoke(); });
 program
     .command('hosts')
     .description('List all services with URL-s')

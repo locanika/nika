@@ -1,6 +1,6 @@
 {
   "name": "locanika",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Small Docker Dev Environment",
   "main": "nika.js",
   "scripts": {
