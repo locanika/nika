@@ -14,6 +14,9 @@ class InitCommand {
             rl.close();
             self.systemService.execShellCommandSync(`git clone git@github.com:locanika/demo.git ${projectPath}`);
             self.systemService.execShellCommandSync(`npm i`);
+            self.systemService.execShellCommandSync(`make services-init`);
+            self.systemService.execShellCommandSync(`make projects-init`);
+            self.systemService.execShellCommandSync(`make services-deploy`);
         });
     }
 }
