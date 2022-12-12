@@ -2,18 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HostsCommand = void 0;
 class HostsCommand {
-    constructor(dockerHostService) {
+    constructor(dockerHostService, loggerService) {
+        this.loggerService = loggerService;
         this.dockerHostService = dockerHostService;
     }
     invoke() {
         this.dockerHostService.listingAll().filter(x => x.enabled).forEach((host) => {
             host.domains.forEach((domain) => {
-                console.log(`${this.printHostDetails(host, domain)}`);
+                this.loggerService.info(`${this.printHostDetails(host, domain)}`);
             });
         });
         this.dockerHostService.listingAll().filter(x => !x.enabled).forEach((host) => {
             host.domains.forEach((domain) => {
-                console.log(`[DISABLED] ${this.printHostDetails(host, domain)}`);
+                this.loggerService.warning(`[DISABLED] ${this.printHostDetails(host, domain)}`);
             });
         });
     }

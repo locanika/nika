@@ -1,22 +1,23 @@
 import {DockerService, DockerServiceDTO} from '../services/DockerService';
+import {LoggerService} from "../services/LoggerService";
 
 export class HostsCommand {
     dockerHostService: DockerService;
 
-    constructor(dockerHostService: DockerService) {
+    constructor(dockerHostService: DockerService, private loggerService: LoggerService) {
         this.dockerHostService = dockerHostService;
     }
 
     public invoke(): void {
         this.dockerHostService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
             host.domains.forEach((domain: string) => {
-                console.log(`${this.printHostDetails(host, domain)}`);
+                this.loggerService.info(`${this.printHostDetails(host, domain)}`);
             });
         });
 
         this.dockerHostService.listingAll().filter(x => !x.enabled).forEach((host: DockerServiceDTO) => {
             host.domains.forEach((domain: string) => {
-                console.log(`[DISABLED] ${this.printHostDetails(host, domain)}`);
+                this.loggerService.warning(`[DISABLED] ${this.printHostDetails(host, domain)}`);
             });
         });
     }

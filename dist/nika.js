@@ -39,7 +39,7 @@ Service Commands:
 program
     .command('hosts')
     .description('List all services with URL-s')
-    .action(() => { (new HostsCommand_1.HostsCommand(dockerService)).invoke(); });
+    .action(() => { (new HostsCommand_1.HostsCommand(dockerService, loggerService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
