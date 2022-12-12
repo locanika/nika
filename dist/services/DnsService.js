@@ -15,24 +15,10 @@ var GatewayConfigsPath;
     GatewayConfigsPath["EXTERNAL_GATEWAY_FOR_LINUX"] = "2";
 })(GatewayConfigsPath = exports.GatewayConfigsPath || (exports.GatewayConfigsPath = {}));
 class DnsService {
-    constructor(config, dockerService) {
+    constructor(config, dockerService, loggerService) {
         this.config = config;
         this.dockerService = dockerService;
-    }
-    /**
-     * Generate content for file /etc/hosts to allow use local domain names
-     */
-    generateEtcHosts() {
-        let etcHosts = fs_1.default.readFileSync('/etc/hosts', 'utf8');
-        this.dockerService.listingAll().forEach(function (host) {
-            host.domains.forEach((domain) => {
-                if (!etcHosts.includes(domain)) {
-                    etcHosts += "127.0.0.1 " + domain + "\n";
-                }
-            });
-        });
-        fs_1.default.writeFileSync('/etc/hosts', etcHosts);
-        console.log("Configured /etc/hosts file");
+        this.loggerService = loggerService;
     }
     /**
      * Generate config for proxy nginx to allow use local domain names
@@ -82,7 +68,7 @@ class DnsService {
                 cors_enabled: host.corsEnabled
             });
             fs_1.default.writeFileSync(gatewayConfigPath, gatewayConfig);
-            console.log("Created file: " + gatewayConfigPath);
+            this.loggerService.info("Created file: " + gatewayConfigPath);
         });
     }
 }

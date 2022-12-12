@@ -5,6 +5,7 @@ import {ConfigService} from "./services/ConfigService";
 import {DockerService} from "./services/DockerService";
 import {DnsCommand} from "./commands/DnsCommand";
 import {DnsService} from "./services/DnsService";
+import {LoggerService} from "./services/LoggerService";
 import {ServicesUpCommand} from "./commands/ServicesUpCommand";
 import {ServicesDownCommand} from "./commands/ServicesDownCommand";
 import {ServicesBuildCommand} from "./commands/ServicesBuildCommand";
@@ -19,9 +20,10 @@ const figlet = require("figlet");
 
 const config = (new ConfigService()).build();
 const systemService = new SystemService();
+const loggerService = new LoggerService();
 const fileSystemService = new FileSystemService(systemService);
 const dockerService = new DockerService(config);
-const dnsService = new DnsService(config, dockerService);
+const dnsService = new DnsService(config, dockerService, loggerService);
 const templateService = new TemplateService(config, fileSystemService, dockerService);
 
 program
@@ -46,11 +48,11 @@ program
 program
     .command('projects-init')
     .description('Clone all GIT repositories specified in projects list')
-    .action(() => { (new ProjectsInitCommand(config, systemService, fileSystemService)).invoke(); });
+    .action(() => { (new ProjectsInitCommand(config, systemService, fileSystemService, loggerService)).invoke(); });
 program
     .command('projects-pull')
     .description('Fetch latest changes from GIT repositories specified in projects list')
-    .action(() => { (new ProjectsPullCommand(config, systemService)).invoke(); });
+    .action(() => { (new ProjectsPullCommand(config, systemService, loggerService)).invoke(); });
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')

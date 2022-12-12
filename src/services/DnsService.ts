@@ -2,6 +2,7 @@ import fs from "fs";
 import {ConfigDTO} from './ConfigService';
 import {DockerService, DockerServiceDTO} from "./DockerService";
 import NginxProxyTemplate from "./../templates/NginxProxyTemplate";
+import {LoggerService} from "./LoggerService";
 
 const nunjucks = require('nunjucks')
 const readline = require('readline');
@@ -13,25 +14,7 @@ export enum GatewayConfigsPath {
 }
 
 export class DnsService {
-    constructor(private config: ConfigDTO, private dockerService: DockerService) {
-    }
-
-    /**
-     * Generate content for file /etc/hosts to allow use local domain names
-     */
-    generateEtcHosts(): void {
-        let etcHosts = fs.readFileSync('/etc/hosts', 'utf8');
-
-        this.dockerService.listingAll().forEach(function (host: DockerServiceDTO) {
-            host.domains.forEach((domain: string) => {
-                if (!etcHosts.includes(domain)) {
-                    etcHosts += "127.0.0.1 " + domain + "\n"
-                }
-            });
-        });
-
-        fs.writeFileSync('/etc/hosts', etcHosts);
-        console.log("Configured /etc/hosts file")
+    constructor(private config: ConfigDTO, private dockerService: DockerService, private loggerService: LoggerService) {
     }
 
     /**
@@ -95,7 +78,7 @@ export class DnsService {
             );
 
             fs.writeFileSync(gatewayConfigPath, gatewayConfig);
-            console.log("Created file: " + gatewayConfigPath)
+            this.loggerService.info("Created file: " + gatewayConfigPath)
         });
     }
 }

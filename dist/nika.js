@@ -7,6 +7,7 @@ const ConfigService_1 = require("./services/ConfigService");
 const DockerService_1 = require("./services/DockerService");
 const DnsCommand_1 = require("./commands/DnsCommand");
 const DnsService_1 = require("./services/DnsService");
+const LoggerService_1 = require("./services/LoggerService");
 const ServicesUpCommand_1 = require("./commands/ServicesUpCommand");
 const ServicesDownCommand_1 = require("./commands/ServicesDownCommand");
 const ServicesBuildCommand_1 = require("./commands/ServicesBuildCommand");
@@ -19,9 +20,10 @@ const { program } = require("commander");
 const figlet = require("figlet");
 const config = (new ConfigService_1.ConfigService()).build();
 const systemService = new SystemService_1.SystemService();
+const loggerService = new LoggerService_1.LoggerService();
 const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
 const dockerService = new DockerService_1.DockerService(config);
-const dnsService = new DnsService_1.DnsService(config, dockerService);
+const dnsService = new DnsService_1.DnsService(config, dockerService, loggerService);
 const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService);
 program
     .name('nika')
@@ -45,11 +47,11 @@ program
 program
     .command('projects-init')
     .description('Clone all GIT repositories specified in projects list')
-    .action(() => { (new ProjectsInitCommand_1.ProjectsInitCommand(config, systemService, fileSystemService)).invoke(); });
+    .action(() => { (new ProjectsInitCommand_1.ProjectsInitCommand(config, systemService, fileSystemService, loggerService)).invoke(); });
 program
     .command('projects-pull')
     .description('Fetch latest changes from GIT repositories specified in projects list')
-    .action(() => { (new ProjectsPullCommand_1.ProjectsPullCommand(config, systemService)).invoke(); });
+    .action(() => { (new ProjectsPullCommand_1.ProjectsPullCommand(config, systemService, loggerService)).invoke(); });
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')

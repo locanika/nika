@@ -6,7 +6,6 @@ class DnsCommand {
         this.dnsService = dnsService;
     }
     invoke() {
-        this.dnsService.generateEtcHosts();
         this.dnsService.generateGatewayConfigs();
     }
 }

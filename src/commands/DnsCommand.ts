@@ -5,7 +5,6 @@ export class DnsCommand {
     }
 
     invoke(): void {
-        this.dnsService.generateEtcHosts();
         this.dnsService.generateGatewayConfigs();
     }
 }
