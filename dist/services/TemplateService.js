@@ -8,21 +8,25 @@ const nunjucks_1 = __importDefault(require("nunjucks"));
 const MakefileTemplate_1 = __importDefault(require("./../templates/MakefileTemplate"));
 const yaml = require('js-yaml');
 class TemplateService {
-    constructor(config, fileSystemService, dockerService) {
+    constructor(config, fileSystemService, dockerService, loggerService) {
         this.config = config;
         this.fileSystemService = fileSystemService;
         this.dockerService = dockerService;
+        this.loggerService = loggerService;
     }
     removeServicesFolder() {
+        this.loggerService.info('Clear ./services folder');
         this.fileSystemService.removeDirectorySync('./services');
         this.fileSystemService.createDirectorySync('./services');
     }
     processServiceTemplates() {
+        this.loggerService.info('Full ./services folder from ./templates folder');
         for (const templatePath of this.fileSystemService.walkDirectorySync('./templates')) {
             this.processServiceTemplate(templatePath);
         }
     }
     processMakefileTemplates() {
+        this.loggerService.info('Generate ./services/Makefile with specific commands for each service');
         let makefile = '';
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
             makefile += nunjucks_1.default.renderString(MakefileTemplate_1.default, { project: host.dockerHost });
@@ -30,6 +34,7 @@ class TemplateService {
         this.fileSystemService.writeFileSync('./services/Makefile', makefile);
     }
     processDockerComposeTemplate() {
+        this.loggerService.info('Generate ./docker-compose.yml');
         let dockerCompose = this.dockerService.rawData();
         dockerCompose.services = {};
         //  TODO: smart check for volumes. If service is disabled probably we should remove volume from list

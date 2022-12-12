@@ -24,7 +24,7 @@ const loggerService = new LoggerService();
 const fileSystemService = new FileSystemService(systemService);
 const dockerService = new DockerService(config);
 const dnsService = new DnsService(config, dockerService, loggerService);
-const templateService = new TemplateService(config, fileSystemService, dockerService);
+const templateService = new TemplateService(config, fileSystemService, dockerService, loggerService);
 
 program
     .name('nika')

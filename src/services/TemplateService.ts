@@ -3,6 +3,7 @@ import {ConfigDTO} from "./ConfigService";
 import {FileSystemService} from "./FileSystemService";
 import {DockerService, DockerServiceDTO} from "./DockerService";
 import MakefileTemplate from "./../templates/MakefileTemplate";
+import {LoggerService} from "./LoggerService";
 
 const yaml = require('js-yaml');
 
@@ -10,22 +11,26 @@ export class TemplateService {
     constructor(
         private config: ConfigDTO,
         private fileSystemService: FileSystemService,
-        private dockerService: DockerService
+        private dockerService: DockerService,
+        private loggerService: LoggerService
     ) {
     }
 
     removeServicesFolder(): void {
+        this.loggerService.info('Clear ./services folder')
         this.fileSystemService.removeDirectorySync('./services');
         this.fileSystemService.createDirectorySync('./services');
     }
 
     processServiceTemplates(): void {
+        this.loggerService.info('Full ./services folder from ./templates folder')
         for (const templatePath of this.fileSystemService.walkDirectorySync('./templates')) {
             this.processServiceTemplate(templatePath);
         }
     }
 
     processMakefileTemplates(): void {
+        this.loggerService.info('Generate ./services/Makefile with specific commands for each service')
         let makefile = '';
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
             makefile += nunjucks.renderString(MakefileTemplate, { project: host.dockerHost });
@@ -34,6 +39,7 @@ export class TemplateService {
     }
 
     processDockerComposeTemplate(): void {
+        this.loggerService.info('Generate ./docker-compose.yml')
         let dockerCompose = this.dockerService.rawData();
         dockerCompose.services = {};
 

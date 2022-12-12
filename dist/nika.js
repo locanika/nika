@@ -24,7 +24,7 @@ const loggerService = new LoggerService_1.LoggerService();
 const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
 const dockerService = new DockerService_1.DockerService(config);
 const dnsService = new DnsService_1.DnsService(config, dockerService, loggerService);
-const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService);
+const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService, loggerService);
 program
     .name('nika')
     .addHelpText('beforeAll', figlet.textSync("Localenv Nika"))
