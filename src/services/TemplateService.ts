@@ -36,6 +36,8 @@ export class TemplateService {
     processDockerComposeTemplate(): void {
         let dockerCompose = this.dockerService.rawData();
         dockerCompose.services = {};
+
+        //  TODO: smart check for volumes. If service is disabled probably we should remove volume from list
         this.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
             dockerCompose.services[host.dockerHost] = host.raw;
         });
