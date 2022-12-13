@@ -50,6 +50,10 @@ export class DnsService {
             self.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
+
+            self.loggerService.warning("\nPlease restart nginx:")
+            self.loggerService.warning("for mac:   nginx -s reload (maybe be with sudo! It depends how it was installed)")
+            self.loggerService.warning("for linux: sudo /etc/init.d/nginx restart")
         });
     }
 
