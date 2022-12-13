@@ -1,8 +1,8 @@
-import fs from "fs";
 import {ConfigDTO} from './ConfigService';
 import {DockerService, DockerServiceDTO} from "./DockerService";
 import NginxProxyTemplate from "./../templates/NginxProxyTemplate";
 import {LoggerService} from "./LoggerService";
+import {FileSystemService} from "./FileSystemService";
 
 const nunjucks = require('nunjucks')
 const readline = require('readline');
@@ -14,7 +14,11 @@ export enum GatewayConfigsPath {
 }
 
 export class DnsService {
-    constructor(private config: ConfigDTO, private dockerService: DockerService, private loggerService: LoggerService) {
+    constructor(
+        private config: ConfigDTO,
+        private dockerService: DockerService,
+        private fileSystemService: FileSystemService,
+        private loggerService: LoggerService) {
     }
 
     /**
@@ -35,6 +39,14 @@ export class DnsService {
 
         rl.question("or just type custom path\n", function(gatewayConfigsPath: string) {
             rl.close();
+
+            const defaultNginxConfigPath = self.getGatewayConfigsPath(gatewayConfigsPath) + 'default';
+
+            if (self.fileSystemService.existsSync(defaultNginxConfigPath)) {
+                self.loggerService.warning("Removed default nginx config: " + defaultNginxConfigPath);
+                self.fileSystemService.removeFileSync(defaultNginxConfigPath);
+            }
+
             self.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
@@ -54,8 +66,8 @@ export class DnsService {
             gatewayConfigsPath = '/etc/nginx/sites-enabled/';
         }
 
-        if (!fs.existsSync(gatewayConfigsPath)) {
-            fs.mkdirSync(gatewayConfigsPath);
+        if (!this.fileSystemService.existsSync(gatewayConfigsPath)) {
+            this.fileSystemService.createDirectorySync(gatewayConfigsPath);
         }
 
         return gatewayConfigsPath;
@@ -77,8 +89,8 @@ export class DnsService {
                 }
             );
 
-            fs.writeFileSync(gatewayConfigPath, gatewayConfig);
-            this.loggerService.info("Created file: " + gatewayConfigPath)
+            this.fileSystemService.writeFileSync(gatewayConfigPath, gatewayConfig);
+            this.loggerService.info("Created file: " + gatewayConfigPath);
         });
     }
 }

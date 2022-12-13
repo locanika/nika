@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DockerService = void 0;
 const yaml = require('js-yaml');
-const fs = require('fs');
 const nunjucks = require('nunjucks');
 class DockerService {
-    constructor(config) {
+    constructor(config, fileSystemService) {
         this.config = config;
+        this.fileSystemService = fileSystemService;
     }
     listingAll() {
         var _a, _b;
@@ -30,7 +30,7 @@ class DockerService {
         return result;
     }
     rawData() {
-        const dockerCompose = nunjucks.renderString(fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
+        const dockerCompose = nunjucks.renderString(this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
             os_name: this.config.osName,
             file_system: this.config.fileSystem,
             docker_mode: this.config.dockerMode,

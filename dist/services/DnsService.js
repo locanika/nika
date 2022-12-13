@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DnsService = exports.GatewayConfigsPath = void 0;
-const fs_1 = __importDefault(require("fs"));
 const NginxProxyTemplate_1 = __importDefault(require("./../templates/NginxProxyTemplate"));
 const nunjucks = require('nunjucks');
 const readline = require('readline');
@@ -15,9 +14,10 @@ var GatewayConfigsPath;
     GatewayConfigsPath["EXTERNAL_GATEWAY_FOR_LINUX"] = "2";
 })(GatewayConfigsPath = exports.GatewayConfigsPath || (exports.GatewayConfigsPath = {}));
 class DnsService {
-    constructor(config, dockerService, loggerService) {
+    constructor(config, dockerService, fileSystemService, loggerService) {
         this.config = config;
         this.dockerService = dockerService;
+        this.fileSystemService = fileSystemService;
         this.loggerService = loggerService;
     }
     /**
@@ -35,6 +35,11 @@ class DnsService {
         let self = this;
         rl.question("or just type custom path\n", function (gatewayConfigsPath) {
             rl.close();
+            const defaultNginxConfigPath = self.getGatewayConfigsPath(gatewayConfigsPath) + 'default';
+            if (self.fileSystemService.existsSync(defaultNginxConfigPath)) {
+                self.loggerService.warning("Removed default nginx config: " + defaultNginxConfigPath);
+                self.fileSystemService.removeFileSync(defaultNginxConfigPath);
+            }
             self.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
@@ -50,8 +55,8 @@ class DnsService {
         if (gatewayConfigsPath === GatewayConfigsPath.EXTERNAL_GATEWAY_FOR_LINUX) {
             gatewayConfigsPath = '/etc/nginx/sites-enabled/';
         }
-        if (!fs_1.default.existsSync(gatewayConfigsPath)) {
-            fs_1.default.mkdirSync(gatewayConfigsPath);
+        if (!this.fileSystemService.existsSync(gatewayConfigsPath)) {
+            this.fileSystemService.createDirectorySync(gatewayConfigsPath);
         }
         return gatewayConfigsPath;
     }
@@ -67,7 +72,7 @@ class DnsService {
                 proxy_path: proxyPath,
                 cors_enabled: host.corsEnabled
             });
-            fs_1.default.writeFileSync(gatewayConfigPath, gatewayConfig);
+            this.fileSystemService.writeFileSync(gatewayConfigPath, gatewayConfig);
             this.loggerService.info("Created file: " + gatewayConfigPath);
         });
     }

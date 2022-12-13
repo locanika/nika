@@ -18,12 +18,12 @@ import {ProjectsInitCommand} from "./commands/ProjectsInitCommand";
 const { program } = require("commander");
 const figlet = require("figlet");
 
-const config = (new ConfigService()).build();
 const systemService = new SystemService();
-const loggerService = new LoggerService();
 const fileSystemService = new FileSystemService(systemService);
-const dockerService = new DockerService(config);
-const dnsService = new DnsService(config, dockerService, loggerService);
+const config = (new ConfigService(fileSystemService, systemService)).build();
+const loggerService = new LoggerService();
+const dockerService = new DockerService(config, fileSystemService);
+const dnsService = new DnsService(config, dockerService, fileSystemService, loggerService);
 const templateService = new TemplateService(config, fileSystemService, dockerService, loggerService);
 
 program

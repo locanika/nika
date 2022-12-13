@@ -1,7 +1,7 @@
 import {ConfigDTO} from './ConfigService';
+import {FileSystemService} from "./FileSystemService";
 
 const yaml = require('js-yaml');
-const fs = require('fs');
 const nunjucks = require('nunjucks')
 
 export interface DockerServiceDTO {
@@ -16,7 +16,7 @@ export interface DockerServiceDTO {
 }
 
 export class DockerService {
-    constructor(private config: ConfigDTO) {
+    constructor(private config: ConfigDTO, private fileSystemService: FileSystemService) {
     }
 
     listingAll(): DockerServiceDTO[] {
@@ -44,7 +44,7 @@ export class DockerService {
 
     rawData(): any {
         const dockerCompose = nunjucks.renderString(
-            fs.readFileSync('./templates/docker-compose.j2', 'utf8'), {
+            this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
                 os_name: this.config.osName,
                 file_system: this.config.fileSystem,
                 docker_mode: this.config.dockerMode,

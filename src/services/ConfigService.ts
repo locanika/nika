@@ -1,6 +1,7 @@
+import {SystemService} from "./SystemService";
+import {FileSystemService} from "./FileSystemService";
+
 const yaml = require('js-yaml');
-const fs = require('fs');
-const os = require('os');
 
 export enum OsName {
     LINUX = 'linux',
@@ -35,6 +36,9 @@ export interface ConfigDTO {
 }
 
 export class ConfigService {
+    constructor(private fileSystemService: FileSystemService, private systemService: SystemService) {
+    }
+
     public build(): ConfigDTO {
         let config = {
             os_name: null,
@@ -45,11 +49,11 @@ export class ConfigService {
             enabled_services: []
         };
 
-        if (fs.existsSync('./config.yml')) {
-            config = { ...config, ...yaml.load(fs.readFileSync('./config.yml', 'utf8')) };
+        if (this.fileSystemService.existsSync('./config.yml')) {
+            config = { ...config, ...yaml.load(this.fileSystemService.readFileSync('./config.yml')) };
         }
-        if (fs.existsSync('./config.local.yml')) {
-            config = { ...config, ...yaml.load(fs.readFileSync('./config.local.yml', 'utf8')) };
+        if (this.fileSystemService.existsSync('./config.local.yml')) {
+            config = { ...config, ...yaml.load(this.fileSystemService.readFileSync('./config.local.yml')) };
         }
 
         const osName = config['os_name'] || this.getDefaultOsName();
@@ -68,7 +72,7 @@ export class ConfigService {
     }
 
     private getDefaultOsName(): OsName {
-        if (os.platform() === 'linux') {
+        if (this.systemService.getPlatform() === 'linux') {
             return OsName.LINUX;
         } else {
             return OsName.MACOS;

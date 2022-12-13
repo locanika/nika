@@ -36,7 +36,11 @@ export class FileSystemService {
     }
 
     writeFileSync(path: string, content: string): void {
-        return fs.writeFileSync(path, content);
+        fs.writeFileSync(path, content);
+    }
+
+    removeFileSync(path: string): void {
+        fs.unlinkSync(path);
     }
 
     getPathDirname(p: string): string {

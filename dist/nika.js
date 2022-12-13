@@ -18,12 +18,12 @@ const ProjectsPullCommand_1 = require("./commands/ProjectsPullCommand");
 const ProjectsInitCommand_1 = require("./commands/ProjectsInitCommand");
 const { program } = require("commander");
 const figlet = require("figlet");
-const config = (new ConfigService_1.ConfigService()).build();
 const systemService = new SystemService_1.SystemService();
-const loggerService = new LoggerService_1.LoggerService();
 const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
-const dockerService = new DockerService_1.DockerService(config);
-const dnsService = new DnsService_1.DnsService(config, dockerService, loggerService);
+const config = (new ConfigService_1.ConfigService(fileSystemService, systemService)).build();
+const loggerService = new LoggerService_1.LoggerService();
+const dockerService = new DockerService_1.DockerService(config, fileSystemService);
+const dnsService = new DnsService_1.DnsService(config, dockerService, fileSystemService, loggerService);
 const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService, loggerService);
 program
     .name('nika')

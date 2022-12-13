@@ -36,7 +36,10 @@ class FileSystemService {
         return fs_1.default.readFileSync(path, 'utf8');
     }
     writeFileSync(path, content) {
-        return fs_1.default.writeFileSync(path, content);
+        fs_1.default.writeFileSync(path, content);
+    }
+    removeFileSync(path) {
+        fs_1.default.unlinkSync(path);
     }
     getPathDirname(p) {
         return path.dirname(p);

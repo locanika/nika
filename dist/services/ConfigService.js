@@ -2,8 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigService = exports.DockerMode = exports.FileSystem = exports.OsName = void 0;
 const yaml = require('js-yaml');
-const fs = require('fs');
-const os = require('os');
 var OsName;
 (function (OsName) {
     OsName["LINUX"] = "linux";
@@ -21,6 +19,10 @@ var DockerMode;
     DockerMode["ROOT"] = "root";
 })(DockerMode = exports.DockerMode || (exports.DockerMode = {}));
 class ConfigService {
+    constructor(fileSystemService, systemService) {
+        this.fileSystemService = fileSystemService;
+        this.systemService = systemService;
+    }
     build() {
         let config = {
             os_name: null,
@@ -30,11 +32,11 @@ class ConfigService {
             projects: [],
             enabled_services: []
         };
-        if (fs.existsSync('./config.yml')) {
-            config = Object.assign(Object.assign({}, config), yaml.load(fs.readFileSync('./config.yml', 'utf8')));
+        if (this.fileSystemService.existsSync('./config.yml')) {
+            config = Object.assign(Object.assign({}, config), yaml.load(this.fileSystemService.readFileSync('./config.yml')));
         }
-        if (fs.existsSync('./config.local.yml')) {
-            config = Object.assign(Object.assign({}, config), yaml.load(fs.readFileSync('./config.local.yml', 'utf8')));
+        if (this.fileSystemService.existsSync('./config.local.yml')) {
+            config = Object.assign(Object.assign({}, config), yaml.load(this.fileSystemService.readFileSync('./config.local.yml')));
         }
         const osName = config['os_name'] || this.getDefaultOsName();
         const fileSystem = config['file_system'] || this.getDefaultFileSystem(osName);
@@ -50,7 +52,7 @@ class ConfigService {
         };
     }
     getDefaultOsName() {
-        if (os.platform() === 'linux') {
+        if (this.systemService.getPlatform() === 'linux') {
             return OsName.LINUX;
         }
         else {
