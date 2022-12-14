@@ -30,6 +30,7 @@ class DockerService {
         return result;
     }
     rawData() {
+        nunjucks.configure('./templates/');
         const dockerCompose = nunjucks.renderString(this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
             os_name: this.config.osName,
             file_system: this.config.fileSystem,

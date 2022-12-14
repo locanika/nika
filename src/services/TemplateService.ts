@@ -51,8 +51,8 @@ export class TemplateService {
     }
 
     private processServiceTemplate(templatePath: string): void {
-        // Skip macos specific files
-        if (templatePath.includes('DS_Store')) {
+        // Skip macos specific files and reserverd for docker-compose
+        if (templatePath.includes('DS_Store') || templatePath.includes('docker-compose.j2')) {
             return;
         }
 

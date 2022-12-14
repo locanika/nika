@@ -44,8 +44,8 @@ class TemplateService {
         this.fileSystemService.writeFileSync('./docker-compose.yml', yaml.dump(dockerCompose));
     }
     processServiceTemplate(templatePath) {
-        // Skip macos specific files
-        if (templatePath.includes('DS_Store')) {
+        // Skip macos specific files and reserverd for docker-compose
+        if (templatePath.includes('DS_Store') || templatePath.includes('docker-compose.j2')) {
             return;
         }
         const servicePath = templatePath.replace("templates/", "./services/");
