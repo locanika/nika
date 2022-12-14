@@ -47,7 +47,7 @@ export class DnsService {
                 self.fileSystemService.removeFileSync(defaultNginxConfigPath);
             }
 
-            self.dockerService.listingAll().filter(x => x.enabled).forEach((host: DockerServiceDTO) => {
+            self.dockerService.listingAll().forEach((host: DockerServiceDTO) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
 

@@ -40,7 +40,7 @@ class DnsService {
                 self.loggerService.warning("Removed default nginx config: " + defaultNginxConfigPath);
                 self.fileSystemService.removeFileSync(defaultNginxConfigPath);
             }
-            self.dockerService.listingAll().filter(x => x.enabled).forEach((host) => {
+            self.dockerService.listingAll().forEach((host) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
             self.loggerService.warning("\nPlease restart nginx:");
