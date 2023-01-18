@@ -47,6 +47,12 @@ export class DnsService {
                 self.fileSystemService.removeFileSync(defaultNginxConfigPath);
             }
 
+            if (self.fileSystemService.existsSync(gatewayConfigsPath)) {
+                // TODO: add some unique signature into all generated file by locanika
+                // that will allow remove this files without touching other configs
+                self.fileSystemService.removeDirectorySync(gatewayConfigsPath);
+            }
+
             self.dockerService.listingAll().forEach((host: DockerServiceDTO) => {
                 self.generateNginxProxyConfig(gatewayConfigsPath, host);
             });
@@ -78,6 +84,11 @@ export class DnsService {
     }
 
     private generateNginxProxyConfig(gatewayConfigsPath: string, host: DockerServiceDTO): void {
+        if (!host.enabled && gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
+            this.loggerService.warning("[DISABLED] Skipped service: " + host.dockerHost);
+            return;
+        }
+
         let proxyPath = host.externalHost + ':' + host.externalPort;
         if (gatewayConfigsPath === GatewayConfigsPath.DOCKER_GATEWAY) {
             proxyPath = host.dockerHost + ':' + host.dockerPort;
