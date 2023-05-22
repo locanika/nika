@@ -207,3 +207,50 @@ Possible solution here clear docker data:
 docker system prune
 docker volume prune
 ```
+
+### Content mismatch error (MacOS)
+
+When frontend accessed by the browser, it showed an error in the console:
+
+```
+GET http://my-site.lo/main.js
+net::ERR_CONTENT_LENGTH_MISMATCH 200 (OK)
+```
+
+Adjacent error from nginx log:
+
+```
+open() /usr/local/var/run/nginx/proxy_temp/4/.... failed
+(13: Permission denied) while reading upstream
+```
+
+Cache folders inside this dir were created by the main user, not by the nginx user (default nginx user is `nobody`).
+
+Steps taken (maybe not all needed):
+
+Run the following command.
+
+```
+chmod 777 -R /usr/local/var/run/nginx/proxy_temp/ 
+```
+  
+Remove the cached folders one by one. 
+ 
+```
+rm -rf /usr/local/var/run/nginx/proxy_temp/4
+```
+ 
+Uncomment the default user in the nginx config line with `#user  nobody;`.
+  
+```
+sudo nano /usr/local/etc/nginx/nginx.conf
+```
+
+Reloading nginx.
+  
+```
+sudo nginx -s stop && sudo nginx
+```
+     
+let the cache dirs be created by the default `nobody` user. 
+
