@@ -94,6 +94,44 @@ make services-deploy
 
 After that your containers ready to usage.
 
+### Initial setup on Windows (WSL)
+
+- Make sure your WSL release supports `systemctl` load on boot.
+- You can check it by running `systemctl status` in a WSL distro command prompt you already have installed (this docs assumes `Ubuntu-22.04`).
+- If unavailable, update your WSL running `wsl --update`.
+  - **Notice:** Updating the WSL may break your previously installed distros.
+- If  the update broke your WSL distro, reinstall it running:
+  - `wsl --unregister Ubuntu-22.04`
+  - `wsl --install Ubuntu-22.04`
+  - After the update, this distro should have the `/etc/wsl.conf` file ready to load `systemctl` on boot.
+- On `Docker Desktop`, go to `Settings > Resources > WSL integration > Enable integration with additional distros` and switch on the integration with `Ubuntu-22.04` distro.
+- Install nginx for Windows from [here](http://nginx.org/en/docs/windows.html). Basically: download and extract into a folder (this docs assumes `C:\dev\apps\nginx-x.xx.x`). Use the instructions from this page to start, stop and reload the application as you need.
+- Create a `servers` folder under the directory where you extracted the `nginx` zip file (`C:\dev\apps\nginx-x.xx.x\servers`).
+- Update the `nginx.conf` file (`C:\dev\apps\nginx-x.xx.x\conf\nginx.conf`):
+ - Look for the end of the `http` block and add or update the following directives:
+   - `include "C:/dev/apps/nginx-x.xx.x/servers/*.conf";`
+   - `server_names_hash_bucket_size  64;`
+- On Gitlab:
+  - Setup your Personal Access Token (menu User Settings > Access Tokens).
+  - Set up your private key.
+  - Add your public SSH key to your GitLab's user settings (menu User Settings > SSH Keys):
+  - Copy and paste the public key content into the `key` text area and save it.
+- Open your code editor (vscode) and connect it to the WSL distro with the `systemctl` running.
+- On a WSL container terminal window, run:
+    ```
+    sudo apt update
+    sudo apt install nodejs
+    sudo git clone # patch to localenv repository with configs
+    npm install
+    make services-init
+    make projects-init
+    make services-deploy
+    ```
+- Create the "DNS". This will add servers configuration files to the `nginx` that is running on your host machine:
+  - `sudo make dns`
+  - Instead of picking an option, type the following path: `/mnt/c/dev/apps/nginx-x.xx.x/servers/`
+- After this step, you may need to start or reload `nginx`.
+
 ## Setup DNS
 
 ### Install nginx outside docker
