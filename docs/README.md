@@ -94,7 +94,7 @@ make services-deploy
 
 After that your containers ready to usage.
 
-### Initial setup on Windows (WSL)
+## Initial setup on Windows (WSL)
 
 - Make sure your WSL release supports `systemctl` load on boot.
 - You can check it by running `systemctl status` in a WSL distro command prompt you already have installed (this docs assumes `Ubuntu-22.04`).
