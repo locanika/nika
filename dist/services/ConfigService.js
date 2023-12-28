@@ -6,6 +6,7 @@ var OsName;
 (function (OsName) {
     OsName["LINUX"] = "linux";
     OsName["MACOS"] = "macos";
+    OsName["MACOS_M1"] = "macos_m1";
 })(OsName = exports.OsName || (exports.OsName = {}));
 var FileSystem;
 (function (FileSystem) {
@@ -52,12 +53,13 @@ class ConfigService {
         };
     }
     getDefaultOsName() {
-        if (this.systemService.getPlatform() === 'linux') {
-            return OsName.LINUX;
-        }
-        else {
+        if (this.systemService.getPlatform() === 'darwin') {
+            if (this.systemService.getCPUArchitecture() === 'arm64') {
+                return OsName.MACOS_M1;
+            }
             return OsName.MACOS;
         }
+        return OsName.LINUX;
     }
     getDefaultFileSystem(osName) {
         if (osName === OsName.LINUX) {

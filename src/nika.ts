@@ -1,4 +1,5 @@
 import {HostsCommand} from './commands/HostsCommand';
+import {StatusCommand} from './commands/StatusCommand';
 import {ServicesPsCommand} from "./commands/ServicesPsCommand";
 import {SystemService} from "./services/SystemService";
 import {ConfigService} from "./services/ConfigService";
@@ -14,6 +15,7 @@ import {TemplateService} from "./services/TemplateService";
 import {FileSystemService} from "./services/FileSystemService";
 import {ProjectsPullCommand} from "./commands/ProjectsPullCommand";
 import {ProjectsInitCommand} from "./commands/ProjectsInitCommand";
+import {StatusService} from "./services/StatusService";
 
 const { program } = require("commander");
 const figlet = require("figlet");
@@ -25,6 +27,7 @@ const loggerService = new LoggerService();
 const dockerService = new DockerService(config, fileSystemService);
 const dnsService = new DnsService(config, dockerService, fileSystemService, loggerService);
 const templateService = new TemplateService(config, fileSystemService, dockerService, loggerService);
+const statusService = new StatusService(config, loggerService);
 
 program
     .name('nika')
@@ -41,6 +44,10 @@ program
     .command('hosts')
     .description('List all services with URL-s')
     .action(() => { (new HostsCommand(dockerService, loggerService)).invoke(); });
+program
+    .command('status')
+    .description('Display current configuration')
+    .action(() => { (new StatusCommand(statusService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')

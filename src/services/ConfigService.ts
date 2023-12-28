@@ -5,7 +5,8 @@ const yaml = require('js-yaml');
 
 export enum OsName {
     LINUX = 'linux',
-    MACOS = 'macos'
+    MACOS = 'macos',
+    MACOS_M1 = 'macos_m1'
 }
 
 export enum FileSystem {
@@ -72,11 +73,15 @@ export class ConfigService {
     }
 
     private getDefaultOsName(): OsName {
-        if (this.systemService.getPlatform() === 'linux') {
-            return OsName.LINUX;
-        } else {
+        if (this.systemService.getPlatform() === 'darwin') {
+            if (this.systemService.getCPUArchitecture() === 'arm64') {
+                return OsName.MACOS_M1;
+            }
+
             return OsName.MACOS;
         }
+
+        return OsName.LINUX;
     }
 
     private getDefaultFileSystem(osName: OsName): FileSystem {

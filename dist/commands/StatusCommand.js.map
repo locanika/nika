@@ -1,0 +1,1 @@
+{"version":3,"file":"StatusCommand.js","sourceRoot":"","sources":["../../src/commands/StatusCommand.ts"],"names":[],"mappings":";;;AAEA,MAAa,aAAa;IACtB,YAAoB,aAA4B;QAA5B,kBAAa,GAAb,aAAa,CAAe;IAChD,CAAC;IAED,MAAM;QACF,IAAI,CAAC,aAAa,CAAC,aAAa,EAAE,CAAC;IACvC,CAAC;CACJ;AAPD,sCAOC"}

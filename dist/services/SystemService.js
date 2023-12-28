@@ -13,6 +13,9 @@ class SystemService {
     getPlatform() {
         return os_1.default.platform();
     }
+    getCPUArchitecture() {
+        return os_1.default.arch();
+    }
 }
 exports.SystemService = SystemService;
 //# sourceMappingURL=SystemService.js.map

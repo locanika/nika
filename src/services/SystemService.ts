@@ -9,4 +9,8 @@ export class SystemService {
     getPlatform(): NodeJS.Platform {
         return os.platform();
     }
+
+    getCPUArchitecture(): string {
+        return os.arch();
+    }
 }

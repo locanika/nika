@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const HostsCommand_1 = require("./commands/HostsCommand");
+const StatusCommand_1 = require("./commands/StatusCommand");
 const ServicesPsCommand_1 = require("./commands/ServicesPsCommand");
 const SystemService_1 = require("./services/SystemService");
 const ConfigService_1 = require("./services/ConfigService");
@@ -16,6 +17,7 @@ const TemplateService_1 = require("./services/TemplateService");
 const FileSystemService_1 = require("./services/FileSystemService");
 const ProjectsPullCommand_1 = require("./commands/ProjectsPullCommand");
 const ProjectsInitCommand_1 = require("./commands/ProjectsInitCommand");
+const StatusService_1 = require("./services/StatusService");
 const { program } = require("commander");
 const figlet = require("figlet");
 const systemService = new SystemService_1.SystemService();
@@ -25,6 +27,7 @@ const loggerService = new LoggerService_1.LoggerService();
 const dockerService = new DockerService_1.DockerService(config, fileSystemService);
 const dnsService = new DnsService_1.DnsService(config, dockerService, fileSystemService, loggerService);
 const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService, loggerService);
+const statusService = new StatusService_1.StatusService(config, loggerService);
 program
     .name('nika')
     .addHelpText('beforeAll', figlet.textSync("Localenv Nika"))
@@ -40,6 +43,10 @@ program
     .command('hosts')
     .description('List all services with URL-s')
     .action(() => { (new HostsCommand_1.HostsCommand(dockerService, loggerService)).invoke(); });
+program
+    .command('status')
+    .description('Display current configuration')
+    .action(() => { (new StatusCommand_1.StatusCommand(statusService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
