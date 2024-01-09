@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConfigService = exports.DockerMode = exports.FileSystem = exports.OsName = void 0;
+exports.ConfigService = exports.ServiceType = exports.DockerMode = exports.FileSystem = exports.OsName = void 0;
 const yaml = require('js-yaml');
 var OsName;
 (function (OsName) {
@@ -19,6 +19,11 @@ var DockerMode;
     DockerMode["ROOT_LESS"] = "root_less";
     DockerMode["ROOT"] = "root";
 })(DockerMode = exports.DockerMode || (exports.DockerMode = {}));
+var ServiceType;
+(function (ServiceType) {
+    ServiceType["SEPARATOR"] = "separator";
+    ServiceType["SERVICE"] = "service";
+})(ServiceType = exports.ServiceType || (exports.ServiceType = {}));
 class ConfigService {
     constructor(fileSystemService, systemService) {
         this.fileSystemService = fileSystemService;
@@ -31,7 +36,7 @@ class ConfigService {
             docker_mode: DockerMode.ROOT,
             services_restart_policy: 'always',
             projects: [],
-            enabled_services: []
+            services: []
         };
         if (this.fileSystemService.existsSync('./config.yml')) {
             config = Object.assign(Object.assign({}, config), yaml.load(this.fileSystemService.readFileSync('./config.yml')));
@@ -39,7 +44,7 @@ class ConfigService {
         if (this.fileSystemService.existsSync('./config.local.yml')) {
             config = Object.assign(Object.assign({}, config), yaml.load(this.fileSystemService.readFileSync('./config.local.yml')));
         }
-        const osName = config['os_name'] || this.getDefaultOsName();
+        const osName = this.getOsName();
         const fileSystem = config['file_system'] || this.getDefaultFileSystem(osName);
         return {
             pathToGatewayProject: './projects/gateway/',
@@ -49,10 +54,13 @@ class ConfigService {
             dockerMode: config['docker_mode'],
             servicesRestartPolicy: config['services_restart_policy'],
             projects: config['projects'],
-            enabledServices: config['enabled_services']
+            services: this.mapServices(config['services'])
         };
     }
-    getDefaultOsName() {
+    save(newConfig) {
+        this.fileSystemService.writeFileSync('./config.local.yml', yaml.dump(newConfig));
+    }
+    getOsName() {
         if (this.systemService.getPlatform() === 'darwin') {
             if (this.systemService.getCPUArchitecture() === 'arm64') {
                 return OsName.MACOS_M1;
@@ -68,6 +76,18 @@ class ConfigService {
         else {
             return FileSystem.MACOS_DEFAULT;
         }
+    }
+    mapServices(rawServices) {
+        let result = [];
+        for (const i in rawServices) {
+            const rawService = rawServices[i];
+            result.push({
+                type: typeof rawService['type'] === "string" ? rawService['type'] : ServiceType.SERVICE,
+                name: rawService['name'],
+                enabled: typeof rawService['enabled'] === "boolean" ? rawService['enabled'] : true
+            });
+        }
+        return result;
     }
 }
 exports.ConfigService = ConfigService;

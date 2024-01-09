@@ -29,7 +29,7 @@ export class DockerService {
             let servicePorts = serviceData?.ports;
 
             result.push({
-                enabled: this.config.enabledServices.includes(serviceName),
+                enabled: this.isServiceEnabled(this.config, serviceName),
                 domains: !!serviceDomains ? serviceDomains.split(',') : [],
                 dockerHost: serviceName,
                 dockerPort: servicePorts ? servicePorts[0].split(':')[1] : '',
@@ -53,5 +53,15 @@ export class DockerService {
             }
         );
         return yaml.load(dockerCompose);
+    }
+
+    private isServiceEnabled(config: ConfigDTO, serviceName: string): boolean {
+        for (const i in config.services) {
+            if (config.services[i].name === serviceName && config.services[i].enabled) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
