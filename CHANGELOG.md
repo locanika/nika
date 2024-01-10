@@ -6,13 +6,13 @@ All changes to the local environment Nika are documented here.
 
 - New syntax for config.yml.
 - Remove config `docker_mode` and `os_name`, right now we determine it automatically. 
-- Introduce install command.
+- Introduce `install` command.
 
 ## [1.0.15] - 2023-12-28
 
 - Update README.md.
 - Fetch CPU architecture for M1.
-- Introduce status command.
+- Introduce `status` command.
 
 ## [1.0.14] - 2023-12-28
 
