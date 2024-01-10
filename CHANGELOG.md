@@ -2,6 +2,11 @@
 
 All changes to the local environment Nika are documented here.
 
+## [2.0.1] - 2023-01-10
+
+- New syntax for config.yml.
+- Introduce `install` command.
+
 ## [2.0.0] - 2023-01-10
 
 - New syntax for config.yml.
