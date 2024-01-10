@@ -17,7 +17,7 @@ class DockerService {
             let serviceDomains = (_a = serviceData.environment) === null || _a === void 0 ? void 0 : _a.DOMAINS;
             let servicePorts = serviceData === null || serviceData === void 0 ? void 0 : serviceData.ports;
             result.push({
-                enabled: this.config.enabledServices.includes(serviceName),
+                enabled: this.isServiceEnabled(this.config, serviceName),
                 domains: !!serviceDomains ? serviceDomains.split(',') : [],
                 dockerHost: serviceName,
                 dockerPort: servicePorts ? servicePorts[0].split(':')[1] : '',
@@ -38,6 +38,14 @@ class DockerService {
             services_restart_policy: this.config.servicesRestartPolicy
         });
         return yaml.load(dockerCompose);
+    }
+    isServiceEnabled(config, serviceName) {
+        for (const i in config.services) {
+            if (config.services[i].name === serviceName && config.services[i].enabled) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 exports.DockerService = DockerService;

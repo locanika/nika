@@ -20,9 +20,20 @@ export enum DockerMode {
     ROOT = 'root'
 }
 
+export enum ServiceType {
+    SEPARATOR = 'separator',
+    SERVICE = 'service'
+}
+
 export interface ProjectDTO {
     name: string,
     src: string
+}
+
+export interface ServiceDTO {
+    type: ServiceType,
+    name: string,
+    enabled: boolean
 }
 
 export interface ConfigDTO {
@@ -33,7 +44,7 @@ export interface ConfigDTO {
     dockerMode: DockerMode,
     servicesRestartPolicy: string,
     projects: ProjectDTO[],
-    enabledServices: string[]
+    services: ServiceDTO[]
 }
 
 export class ConfigService {
@@ -47,7 +58,7 @@ export class ConfigService {
             docker_mode: DockerMode.ROOT,
             services_restart_policy: 'always',
             projects: [],
-            enabled_services: []
+            services: []
         };
 
         if (this.fileSystemService.existsSync('./config.yml')) {
@@ -57,7 +68,7 @@ export class ConfigService {
             config = { ...config, ...yaml.load(this.fileSystemService.readFileSync('./config.local.yml')) };
         }
 
-        const osName = config['os_name'] || this.getDefaultOsName();
+        const osName = this.getOsName();
         const fileSystem = config['file_system'] || this.getDefaultFileSystem(osName);
 
         return {
@@ -68,11 +79,15 @@ export class ConfigService {
             dockerMode: config['docker_mode'],
             servicesRestartPolicy: config['services_restart_policy'],
             projects: config['projects'],
-            enabledServices: config['enabled_services']
+            services: this.mapServices(config['services'])
         };
     }
 
-    private getDefaultOsName(): OsName {
+    public save(newConfig: ConfigDTO): void {
+        this.fileSystemService.writeFileSync('./config.local.yml', yaml.dump(newConfig));
+    }
+
+    private getOsName(): OsName {
         if (this.systemService.getPlatform() === 'darwin') {
             if (this.systemService.getCPUArchitecture() === 'arm64') {
                 return OsName.MACOS_M1;
@@ -90,5 +105,21 @@ export class ConfigService {
         } else {
             return FileSystem.MACOS_DEFAULT;
         }
+    }
+
+    private mapServices(rawServices: any[]): ServiceDTO[] {
+        let result = [];
+
+        for (const i in rawServices) {
+            const rawService = rawServices[i];
+
+            result.push({
+                type: typeof rawService['type'] === "string" ? rawService['type'] : ServiceType.SERVICE,
+                name: rawService['name'],
+                enabled: typeof rawService['enabled'] === "boolean" ? rawService['enabled'] : true
+            } as ServiceDTO);
+        }
+
+        return result;
     }
 }

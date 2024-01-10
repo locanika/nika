@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const HostsCommand_1 = require("./commands/HostsCommand");
 const StatusCommand_1 = require("./commands/StatusCommand");
+const InstallCommand_1 = require("./commands/InstallCommand");
 const ServicesPsCommand_1 = require("./commands/ServicesPsCommand");
 const SystemService_1 = require("./services/SystemService");
 const ConfigService_1 = require("./services/ConfigService");
@@ -22,7 +23,8 @@ const { program } = require("commander");
 const figlet = require("figlet");
 const systemService = new SystemService_1.SystemService();
 const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
-const config = (new ConfigService_1.ConfigService(fileSystemService, systemService)).build();
+const configService = new ConfigService_1.ConfigService(fileSystemService, systemService);
+const config = configService.build();
 const loggerService = new LoggerService_1.LoggerService();
 const dockerService = new DockerService_1.DockerService(config, fileSystemService);
 const dnsService = new DnsService_1.DnsService(config, dockerService, fileSystemService, loggerService);
@@ -47,6 +49,10 @@ program
     .command('status')
     .description('Display current configuration')
     .action(() => { (new StatusCommand_1.StatusCommand(statusService)).invoke(); });
+program
+    .command('install')
+    .description('Change current configuration')
+    .action(() => { (new InstallCommand_1.InstallCommand(config, configService, loggerService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
