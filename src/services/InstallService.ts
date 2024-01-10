@@ -1,6 +1,5 @@
-import {FileSystem} from "../services/ConfigService";
+import {FileSystem,ConfigDTO} from "../services/ConfigService";
 import inquirer from "inquirer";
-import {ConfigDTO} from "locanika/src/services/ConfigService";
 
 export class InstallService {
     constructor(

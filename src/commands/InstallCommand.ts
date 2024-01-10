@@ -1,8 +1,8 @@
 import inquirer from 'inquirer';
 import {ConfigDTO, ConfigService} from "../services/ConfigService";
 import {LoggerService} from "../services/LoggerService";
-import {InstallService} from "locanika/src/services/InstallService";
-import {ServiceDTO, ServiceGroupDTO} from "locanika/src/services/ConfigService";
+import {InstallService} from "../services/InstallService";
+import {ServiceDTO, ServiceGroupDTO} from "../services/ConfigService";
 
 export class InstallCommand {
     constructor(
