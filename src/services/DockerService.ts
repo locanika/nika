@@ -22,11 +22,21 @@ export class DockerService {
     listingAll(): DockerServiceDTO[] {
         const result = [];
         const rawServices = this.rawData()['services'];
+        let externalPorts = [] as string[];
 
         for (const serviceName in rawServices) {
             const serviceData = rawServices[serviceName];
-            let serviceDomains = serviceData.environment?.DOMAINS;
-            let servicePorts = serviceData?.ports;
+            const serviceDomains = serviceData.environment?.DOMAINS;
+            const servicePorts = serviceData?.ports;
+            const externalPort = servicePorts ? servicePorts[0].split(':')[0] : '';
+
+            if (externalPort !== '') {
+                if (externalPorts.includes(externalPort)) {
+                    throw new Error('Port ' + externalPort + ' used by multiple services');
+                }
+
+                externalPorts.push(externalPort);
+            }
 
             result.push({
                 enabled: this.isServiceEnabled(this.config, serviceName),
@@ -34,7 +44,7 @@ export class DockerService {
                 dockerHost: serviceName,
                 dockerPort: servicePorts ? servicePorts[0].split(':')[1] : '',
                 externalHost: '127.0.0.1',
-                externalPort: servicePorts ? servicePorts[0].split(':')[0] : '',
+                externalPort: externalPort,
                 corsEnabled: !!serviceData.environment?.BACKEND_API_CORS,
                 raw: serviceData
             })
