@@ -2,11 +2,34 @@
 
 All changes to the local environment Nika are documented here.
 
-## [1.0.15] - 2022-11-18
-## [1.0.14] - 2022-11-18
-## [1.0.13] - 2022-11-18
-## [1.0.12] - 2022-11-18
-## [1.0.11] - 2022-11-18
+## [2.0.0] - 2023-01-10
+
+- New syntax for config.yml.
+- Remove config `docker_mode` and `os_name`, right now we determine it automatically. 
+- Introduce install command.
+
+## [1.0.15] - 2023-12-28
+
+- Update README.md.
+- Fetch CPU architecture for M1.
+- Introduce status command.
+
+## [1.0.14] - 2023-12-28
+
+- Skip nginx config generation for docker gateway because it produces errors like "host not found".
+
+## [1.0.13] - 2022-12-14
+
+- Generate domains for all services.
+
+## [1.0.12] - 2022-12-14
+
+- Support partials for docker compose.
+
+## [1.0.11] - 2022-12-13
+
+- Add nginx restart command hint
+
 ## [1.0.10] - 2022-12-13
 
 - Remove dependency from infrastructure methods.
