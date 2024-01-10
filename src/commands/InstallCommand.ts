@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
 import {FileSystem, ServiceType} from "../services/ConfigService";
-import {ConfigDTO, ConfigService} from "locanika/src/services/ConfigService";
+import {ConfigDTO, ConfigService} from "../services/ConfigService";
 import {LoggerService} from "../services/LoggerService";
 
 export class InstallCommand {

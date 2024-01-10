@@ -32,7 +32,7 @@ const templateService = new TemplateService_1.TemplateService(config, fileSystem
 const statusService = new StatusService_1.StatusService(config, loggerService);
 program
     .name('nika')
-    .addHelpText('beforeAll', figlet.textSync("Hello BlacSeaCoders!"))
+    .addHelpText('beforeAll', figlet.textSync("Localenv Nika"))
     .addHelpText('afterAll', `
 Service Commands:
   PROJECT-ssh      Connect to PROJECT container
