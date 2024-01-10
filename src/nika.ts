@@ -17,6 +17,7 @@ import {FileSystemService} from "./services/FileSystemService";
 import {ProjectsPullCommand} from "./commands/ProjectsPullCommand";
 import {ProjectsInitCommand} from "./commands/ProjectsInitCommand";
 import {StatusService} from "./services/StatusService";
+import {InstallService} from "./services/InstallService";
 
 const { program } = require("commander");
 const figlet = require("figlet");
@@ -26,6 +27,7 @@ const fileSystemService = new FileSystemService(systemService);
 const configService = new ConfigService(fileSystemService, systemService);
 const config = configService.build();
 const loggerService = new LoggerService();
+const installService = new InstallService(config);
 const dockerService = new DockerService(config, fileSystemService);
 const dnsService = new DnsService(config, dockerService, fileSystemService, loggerService);
 const templateService = new TemplateService(config, fileSystemService, dockerService, loggerService);
@@ -53,7 +55,7 @@ program
 program
     .command('install')
     .description('Change current configuration')
-    .action(() => { (new InstallCommand(config, configService, loggerService)).invoke(); });
+    .action(() => { (new InstallCommand(config, configService, installService, loggerService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')

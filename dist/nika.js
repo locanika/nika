@@ -19,6 +19,7 @@ const FileSystemService_1 = require("./services/FileSystemService");
 const ProjectsPullCommand_1 = require("./commands/ProjectsPullCommand");
 const ProjectsInitCommand_1 = require("./commands/ProjectsInitCommand");
 const StatusService_1 = require("./services/StatusService");
+const InstallService_1 = require("./services/InstallService");
 const { program } = require("commander");
 const figlet = require("figlet");
 const systemService = new SystemService_1.SystemService();
@@ -26,6 +27,7 @@ const fileSystemService = new FileSystemService_1.FileSystemService(systemServic
 const configService = new ConfigService_1.ConfigService(fileSystemService, systemService);
 const config = configService.build();
 const loggerService = new LoggerService_1.LoggerService();
+const installService = new InstallService_1.InstallService(config);
 const dockerService = new DockerService_1.DockerService(config, fileSystemService);
 const dnsService = new DnsService_1.DnsService(config, dockerService, fileSystemService, loggerService);
 const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService, loggerService);
@@ -52,7 +54,7 @@ program
 program
     .command('install')
     .description('Change current configuration')
-    .action(() => { (new InstallCommand_1.InstallCommand(config, configService, loggerService)).invoke(); });
+    .action(() => { (new InstallCommand_1.InstallCommand(config, configService, installService, loggerService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')

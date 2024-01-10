@@ -34,15 +34,17 @@ class DockerService {
         const dockerCompose = nunjucks.renderString(this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
             os_name: this.config.osName,
             file_system: this.config.fileSystem,
-            docker_mode: this.config.dockerMode,
             services_restart_policy: this.config.servicesRestartPolicy
         });
         return yaml.load(dockerCompose);
     }
     isServiceEnabled(config, serviceName) {
         for (const i in config.services) {
-            if (config.services[i].name === serviceName && config.services[i].enabled) {
-                return true;
+            for (const j in config.services[i].services) {
+                const service = config.services[i].services[j];
+                if (service.name === serviceName && service.enabled) {
+                    return true;
+                }
             }
         }
         return false;

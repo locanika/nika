@@ -1,12 +1,14 @@
 import inquirer from 'inquirer';
-import {FileSystem, ServiceType} from "../services/ConfigService";
 import {ConfigDTO, ConfigService} from "../services/ConfigService";
 import {LoggerService} from "../services/LoggerService";
+import {InstallService} from "locanika/src/services/InstallService";
+import {ServiceDTO, ServiceGroupDTO} from "locanika/src/services/ConfigService";
 
 export class InstallCommand {
     constructor(
         private config: ConfigDTO,
         private configService: ConfigService,
+        private installService: InstallService,
         private logger: LoggerService
     ) {
     }
@@ -16,51 +18,55 @@ export class InstallCommand {
             .prompt([
                 {
                     type: 'rawlist',
-                    message: 'File system',
+                    message: 'Select file system or press ENTER for select default option',
                     name: 'fileSystem',
-                    choices: this.fileSystemChoices()
+                    choices: this.installService.fileSystemChoices(),
+                    default: this.installService.fileSystemDefaultChoice(),
                 },
                 {
                     type: 'checkbox',
                     message: 'Enabled services',
                     name: 'enabledServices',
                     pageSize: 20,
-                    choices: this.enabledServicesChoices()
+                    choices: this.installService.enabledServicesChoices()
                 }
             ])
             .then((answers: any) => {
-                this.configService.save(this.config);
+                this.configService.save(this.mapAnswersToConfigDTO(answers));
                 this.logger.info('Local config updated');
             });
     }
 
-    private fileSystemChoices(): any {
-        return [
-            { name: 'linux_default', value: FileSystem.LINUX_DEFAULT },
-            { name: 'macos_default', value: FileSystem.MACOS_DEFAULT },
-            { name: 'macos_mutagen', value: FileSystem.MACOS_MUTAGEN }
-        ];
-    }
-
-    private enabledServicesChoices(): any {
-        let result = [];
+    private mapAnswersToConfigDTO(answers: any): ConfigDTO {
+        let configServices = [];
 
         for (const i in this.config.services) {
-            const service = this.config.services[i];
+            const serviceGroup = this.config.services[i];
+            let serviceGroupItems = [];
 
-            if (service.type === ServiceType.SEPARATOR) {
-                result.push(new inquirer.Separator(service.name))
-            } else {
-                result.push(
-                    {
-                        name: service.name,
-                        value: service.name,
-                        checked: service.enabled
-                    }
-                )
+            for (const j in serviceGroup.services) {
+                const service = serviceGroup.services[j];
+
+                serviceGroupItems.push({
+                    name: service.name,
+                    enabled: answers.enabledServices.includes(service.name)
+                } as ServiceDTO);
             }
+
+            configServices.push({
+                group: serviceGroup.group,
+                services: serviceGroupItems
+            } as ServiceGroupDTO);
         }
 
-        return result;
+        return {
+            pathToGatewayProject: this.config.pathToGatewayProject,
+            pathToDockerConfig: this.config.pathToDockerConfig,
+            osName: this.config.osName,
+            fileSystem: answers.fileSystem,
+            servicesRestartPolicy: this.config.servicesRestartPolicy,
+            projects: this.config.projects,
+            services: configServices
+        };
     }
 }

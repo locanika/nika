@@ -5,11 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InstallCommand = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
-const ConfigService_1 = require("../services/ConfigService");
 class InstallCommand {
-    constructor(config, configService, logger) {
+    constructor(config, configService, installService, logger) {
         this.config = config;
         this.configService = configService;
+        this.installService = installService;
         this.logger = logger;
     }
     invoke() {
@@ -17,46 +17,50 @@ class InstallCommand {
             .prompt([
             {
                 type: 'rawlist',
-                message: 'File system',
+                message: 'Select file system or press ENTER for select default option',
                 name: 'fileSystem',
-                choices: this.fileSystemChoices()
+                choices: this.installService.fileSystemChoices(),
+                default: this.installService.fileSystemDefaultChoice(),
             },
             {
                 type: 'checkbox',
                 message: 'Enabled services',
                 name: 'enabledServices',
                 pageSize: 20,
-                choices: this.enabledServicesChoices()
+                choices: this.installService.enabledServicesChoices()
             }
         ])
             .then((answers) => {
-            this.configService.save(this.config);
+            this.configService.save(this.mapAnswersToConfigDTO(answers));
             this.logger.info('Local config updated');
         });
     }
-    fileSystemChoices() {
-        return [
-            { name: 'linux_default', value: ConfigService_1.FileSystem.LINUX_DEFAULT },
-            { name: 'macos_default', value: ConfigService_1.FileSystem.MACOS_DEFAULT },
-            { name: 'macos_mutagen', value: ConfigService_1.FileSystem.MACOS_MUTAGEN }
-        ];
-    }
-    enabledServicesChoices() {
-        let result = [];
+    mapAnswersToConfigDTO(answers) {
+        let configServices = [];
         for (const i in this.config.services) {
-            const service = this.config.services[i];
-            if (service.type === ConfigService_1.ServiceType.SEPARATOR) {
-                result.push(new inquirer_1.default.Separator(service.name));
-            }
-            else {
-                result.push({
+            const serviceGroup = this.config.services[i];
+            let serviceGroupItems = [];
+            for (const j in serviceGroup.services) {
+                const service = serviceGroup.services[j];
+                serviceGroupItems.push({
                     name: service.name,
-                    value: service.name,
-                    checked: service.enabled
+                    enabled: answers.enabledServices.includes(service.name)
                 });
             }
+            configServices.push({
+                group: serviceGroup.group,
+                services: serviceGroupItems
+            });
         }
-        return result;
+        return {
+            pathToGatewayProject: this.config.pathToGatewayProject,
+            pathToDockerConfig: this.config.pathToDockerConfig,
+            osName: this.config.osName,
+            fileSystem: answers.fileSystem,
+            servicesRestartPolicy: this.config.servicesRestartPolicy,
+            projects: this.config.projects,
+            services: configServices
+        };
     }
 }
 exports.InstallCommand = InstallCommand;

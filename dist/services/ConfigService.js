@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConfigService = exports.ServiceType = exports.DockerMode = exports.FileSystem = exports.OsName = void 0;
+exports.ConfigService = exports.FileSystem = exports.OsName = void 0;
 const yaml = require('js-yaml');
 var OsName;
 (function (OsName) {
@@ -14,16 +14,6 @@ var FileSystem;
     FileSystem["MACOS_DEFAULT"] = "macos_default";
     FileSystem["MACOS_MUTAGEN"] = "macos_mutagen";
 })(FileSystem = exports.FileSystem || (exports.FileSystem = {}));
-var DockerMode;
-(function (DockerMode) {
-    DockerMode["ROOT_LESS"] = "root_less";
-    DockerMode["ROOT"] = "root";
-})(DockerMode = exports.DockerMode || (exports.DockerMode = {}));
-var ServiceType;
-(function (ServiceType) {
-    ServiceType["SEPARATOR"] = "separator";
-    ServiceType["SERVICE"] = "service";
-})(ServiceType = exports.ServiceType || (exports.ServiceType = {}));
 class ConfigService {
     constructor(fileSystemService, systemService) {
         this.fileSystemService = fileSystemService;
@@ -33,7 +23,6 @@ class ConfigService {
         let config = {
             os_name: null,
             file_system: null,
-            docker_mode: DockerMode.ROOT,
             services_restart_policy: 'always',
             projects: [],
             services: []
@@ -51,14 +40,16 @@ class ConfigService {
             pathToDockerConfig: './docker-compose.yml',
             osName: osName,
             fileSystem: fileSystem,
-            dockerMode: config['docker_mode'],
             servicesRestartPolicy: config['services_restart_policy'],
             projects: config['projects'],
             services: this.mapServices(config['services'])
         };
     }
     save(newConfig) {
-        this.fileSystemService.writeFileSync('./config.local.yml', yaml.dump(newConfig));
+        this.fileSystemService.writeFileSync('./config.local.yml', yaml.dump({
+            file_system: newConfig.fileSystem,
+            services: newConfig.services
+        }));
     }
     getOsName() {
         if (this.systemService.getPlatform() === 'darwin') {
@@ -80,11 +71,18 @@ class ConfigService {
     mapServices(rawServices) {
         let result = [];
         for (const i in rawServices) {
-            const rawService = rawServices[i];
+            const rawServiceGroup = rawServices[i];
+            let serviceGroupItems = [];
+            for (const j in rawServiceGroup['services']) {
+                const rawService = rawServiceGroup['services'][j];
+                serviceGroupItems.push({
+                    name: rawService['name'],
+                    enabled: typeof rawService['enabled'] === "boolean" ? rawService['enabled'] : true
+                });
+            }
             result.push({
-                type: typeof rawService['type'] === "string" ? rawService['type'] : ServiceType.SERVICE,
-                name: rawService['name'],
-                enabled: typeof rawService['enabled'] === "boolean" ? rawService['enabled'] : true
+                group: rawServiceGroup['group'],
+                services: serviceGroupItems
             });
         }
         return result;
