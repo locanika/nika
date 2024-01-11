@@ -28,7 +28,8 @@ export class InstallCommand {
                     message: 'Enabled services',
                     name: 'enabledServices',
                     pageSize: 20,
-                    choices: this.installService.enabledServicesChoices()
+                    choices: this.installService.enabledServicesChoices(),
+                    loop: false
                 }
             ])
             .then((answers: any) => {
