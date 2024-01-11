@@ -29,7 +29,6 @@ class ConfigService {
         let config = {
             os_name: null,
             file_system: null,
-            services_restart_policy: 'always',
             projects: [],
             services: []
         };
@@ -46,7 +45,6 @@ class ConfigService {
             pathToDockerConfig: './docker-compose.yml',
             osName: osName,
             fileSystem: fileSystem,
-            servicesRestartPolicy: config['services_restart_policy'],
             projects: config['projects'],
             services: this.mapServices(config['services'])
         };
