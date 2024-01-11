@@ -2,6 +2,10 @@
 
 All changes to the local environment Nika are documented here.
 
+## [2.0.5] - 2023-01-11
+
+- Remove option `services_restart_policy`.
+
 ## [2.0.4] - 2023-01-11
 
 - Split default and user configs for `install` command.

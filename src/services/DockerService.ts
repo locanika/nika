@@ -57,8 +57,7 @@ export class DockerService {
         const dockerCompose = nunjucks.renderString(
             this.fileSystemService.readFileSync('./templates/docker-compose.j2'), {
                 os_name: this.config.osName,
-                file_system: this.config.fileSystem,
-                services_restart_policy: this.config.servicesRestartPolicy
+                file_system: this.config.fileSystem
             }
         );
         return yaml.load(dockerCompose);

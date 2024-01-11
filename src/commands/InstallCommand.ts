@@ -65,7 +65,6 @@ export class InstallCommand {
             pathToDockerConfig: this.defaultConfig.pathToDockerConfig,
             osName: this.defaultConfig.osName,
             fileSystem: answers.fileSystem,
-            servicesRestartPolicy: this.defaultConfig.servicesRestartPolicy,
             projects: this.defaultConfig.projects,
             services: configServices
         };
