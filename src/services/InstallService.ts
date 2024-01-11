@@ -3,7 +3,8 @@ import inquirer from "inquirer";
 
 export class InstallService {
     constructor(
-        private config: ConfigDTO
+        private defaultConfig: ConfigDTO,
+        private userConfig: ConfigDTO
     ) {
     }
 
@@ -19,7 +20,7 @@ export class InstallService {
         const fileSystemChoices = this.fileSystemChoices();
 
         for (const i in fileSystemChoices) {
-            if (this.config.fileSystem === fileSystemChoices[i]['value']) {
+            if (this.userConfig.fileSystem === fileSystemChoices[i]['value']) {
                 return parseInt(i, 10);
             }
         }
@@ -30,8 +31,8 @@ export class InstallService {
     enabledServicesChoices(): any {
         let result = [];
 
-        for (const i in this.config.services) {
-            const servicesGroup = this.config.services[i];
+        for (const i in this.defaultConfig.services) {
+            const servicesGroup = this.defaultConfig.services[i];
             result.push(new inquirer.Separator(servicesGroup.group))
 
             for (const j in servicesGroup.services) {
@@ -40,11 +41,25 @@ export class InstallService {
                 result.push({
                     name: service.name,
                     value: service.name,
-                    checked: service.enabled
+                    checked: this.isServiceEnabled(this.userConfig, service.name)
                 });
             }
         }
 
         return result;
+    }
+
+    private isServiceEnabled(config: ConfigDTO, serviceName: string): boolean {
+        for (const i in config.services) {
+            for (const j in config.services[i].services) {
+                const service = config.services[i].services[j];
+
+                if (service.name === serviceName && service.enabled) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

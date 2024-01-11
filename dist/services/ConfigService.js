@@ -19,7 +19,13 @@ class ConfigService {
         this.fileSystemService = fileSystemService;
         this.systemService = systemService;
     }
-    build() {
+    buildUserConfig() {
+        return this.build(true);
+    }
+    buildDefaultConfig() {
+        return this.build(false);
+    }
+    build(fetchLocalConfig) {
         let config = {
             os_name: null,
             file_system: null,
@@ -30,7 +36,7 @@ class ConfigService {
         if (this.fileSystemService.existsSync('./config.yml')) {
             config = Object.assign(Object.assign({}, config), yaml.load(this.fileSystemService.readFileSync('./config.yml')));
         }
-        if (this.fileSystemService.existsSync('./config.local.yml')) {
+        if (fetchLocalConfig && this.fileSystemService.existsSync('./config.local.yml')) {
             config = Object.assign(Object.assign({}, config), yaml.load(this.fileSystemService.readFileSync('./config.local.yml')));
         }
         const osName = this.getOsName();

@@ -25,13 +25,14 @@ const figlet = require("figlet");
 const systemService = new SystemService();
 const fileSystemService = new FileSystemService(systemService);
 const configService = new ConfigService(fileSystemService, systemService);
-const config = configService.build();
+const userConfig = configService.buildUserConfig();
+const defaultConfig = configService.buildDefaultConfig();
 const loggerService = new LoggerService();
-const installService = new InstallService(config);
-const dockerService = new DockerService(config, fileSystemService);
-const dnsService = new DnsService(config, dockerService, fileSystemService, loggerService);
-const templateService = new TemplateService(config, fileSystemService, dockerService, loggerService);
-const statusService = new StatusService(config, loggerService);
+const installService = new InstallService(defaultConfig, userConfig);
+const dockerService = new DockerService(userConfig, fileSystemService);
+const dnsService = new DnsService(userConfig, dockerService, fileSystemService, loggerService);
+const templateService = new TemplateService(userConfig, fileSystemService, dockerService, loggerService);
+const statusService = new StatusService(userConfig, loggerService);
 
 program
     .name('nika')
@@ -55,7 +56,7 @@ program
 program
     .command('install')
     .description('Change current configuration')
-    .action(() => { (new InstallCommand(config, configService, installService, loggerService)).invoke(); });
+    .action(() => { (new InstallCommand(defaultConfig, configService, installService, loggerService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
@@ -63,11 +64,11 @@ program
 program
     .command('projects-init')
     .description('Clone all GIT repositories specified in projects list')
-    .action(() => { (new ProjectsInitCommand(config, systemService, fileSystemService, loggerService)).invoke(); });
+    .action(() => { (new ProjectsInitCommand(userConfig, systemService, fileSystemService, loggerService)).invoke(); });
 program
     .command('projects-pull')
     .description('Fetch latest changes from GIT repositories specified in projects list')
-    .action(() => { (new ProjectsPullCommand(config, systemService, loggerService)).invoke(); });
+    .action(() => { (new ProjectsPullCommand(userConfig, systemService, loggerService)).invoke(); });
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')
@@ -75,17 +76,17 @@ program
 program
     .command('services-ps')
     .description('List all running docker containers')
-    .action(() => { (new ServicesPsCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesPsCommand(userConfig, systemService)).invoke(); });
 program
     .command('services-up')
     .description('Create and start containers')
-    .action(() => { (new ServicesUpCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesUpCommand(userConfig, systemService)).invoke(); });
 program
     .command('services-down')
     .description('Stop and remove containers, networks')
-    .action(() => { (new ServicesDownCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesDownCommand(userConfig, systemService)).invoke(); });
 program
     .command('services-build')
     .description('Pull service images and build or rebuild services')
-    .action(() => { (new ServicesBuildCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesBuildCommand(userConfig, systemService)).invoke(); });
 program.parse();

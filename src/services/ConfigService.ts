@@ -44,7 +44,15 @@ export class ConfigService {
     constructor(private fileSystemService: FileSystemService, private systemService: SystemService) {
     }
 
-    public build(): ConfigDTO {
+    public buildUserConfig(): ConfigDTO {
+        return this.build(true);
+    }
+
+    public buildDefaultConfig(): ConfigDTO {
+        return this.build(false);
+    }
+
+    private build(fetchLocalConfig: boolean): ConfigDTO {
         let config = {
             os_name: null,
             file_system: null,
@@ -56,7 +64,7 @@ export class ConfigService {
         if (this.fileSystemService.existsSync('./config.yml')) {
             config = { ...config, ...yaml.load(this.fileSystemService.readFileSync('./config.yml')) };
         }
-        if (this.fileSystemService.existsSync('./config.local.yml')) {
+        if (fetchLocalConfig && this.fileSystemService.existsSync('./config.local.yml')) {
             config = { ...config, ...yaml.load(this.fileSystemService.readFileSync('./config.local.yml')) };
         }
 

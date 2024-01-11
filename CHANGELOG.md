@@ -2,9 +2,13 @@
 
 All changes to the local environment Nika are documented here.
 
+## [2.0.4] - 2023-01-11
+
+- Split default and user configs for `install` command.
+
 ## [2.0.3] - 2023-01-11
 
-- Disable loop for install command.
+- Disable loop for `install` command.
 
 ## [2.0.2] - 2023-01-10
 

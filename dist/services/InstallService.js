@@ -7,8 +7,9 @@ exports.InstallService = void 0;
 const ConfigService_1 = require("../services/ConfigService");
 const inquirer_1 = __importDefault(require("inquirer"));
 class InstallService {
-    constructor(config) {
-        this.config = config;
+    constructor(defaultConfig, userConfig) {
+        this.defaultConfig = defaultConfig;
+        this.userConfig = userConfig;
     }
     fileSystemChoices() {
         return [
@@ -20,7 +21,7 @@ class InstallService {
     fileSystemDefaultChoice() {
         const fileSystemChoices = this.fileSystemChoices();
         for (const i in fileSystemChoices) {
-            if (this.config.fileSystem === fileSystemChoices[i]['value']) {
+            if (this.userConfig.fileSystem === fileSystemChoices[i]['value']) {
                 return parseInt(i, 10);
             }
         }
@@ -28,19 +29,30 @@ class InstallService {
     }
     enabledServicesChoices() {
         let result = [];
-        for (const i in this.config.services) {
-            const servicesGroup = this.config.services[i];
+        for (const i in this.defaultConfig.services) {
+            const servicesGroup = this.defaultConfig.services[i];
             result.push(new inquirer_1.default.Separator(servicesGroup.group));
             for (const j in servicesGroup.services) {
                 const service = servicesGroup.services[j];
                 result.push({
                     name: service.name,
                     value: service.name,
-                    checked: service.enabled
+                    checked: this.isServiceEnabled(this.userConfig, service.name)
                 });
             }
         }
         return result;
+    }
+    isServiceEnabled(config, serviceName) {
+        for (const i in config.services) {
+            for (const j in config.services[i].services) {
+                const service = config.services[i].services[j];
+                if (service.name === serviceName && service.enabled) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
 exports.InstallService = InstallService;

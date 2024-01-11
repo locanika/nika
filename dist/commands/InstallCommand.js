@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InstallCommand = void 0;
 const inquirer_1 = __importDefault(require("inquirer"));
 class InstallCommand {
-    constructor(config, configService, installService, logger) {
-        this.config = config;
+    constructor(defaultConfig, configService, installService, logger) {
+        this.defaultConfig = defaultConfig;
         this.configService = configService;
         this.installService = installService;
         this.logger = logger;
@@ -38,8 +38,8 @@ class InstallCommand {
     }
     mapAnswersToConfigDTO(answers) {
         let configServices = [];
-        for (const i in this.config.services) {
-            const serviceGroup = this.config.services[i];
+        for (const i in this.defaultConfig.services) {
+            const serviceGroup = this.defaultConfig.services[i];
             let serviceGroupItems = [];
             for (const j in serviceGroup.services) {
                 const service = serviceGroup.services[j];
@@ -54,12 +54,12 @@ class InstallCommand {
             });
         }
         return {
-            pathToGatewayProject: this.config.pathToGatewayProject,
-            pathToDockerConfig: this.config.pathToDockerConfig,
-            osName: this.config.osName,
+            pathToGatewayProject: this.defaultConfig.pathToGatewayProject,
+            pathToDockerConfig: this.defaultConfig.pathToDockerConfig,
+            osName: this.defaultConfig.osName,
             fileSystem: answers.fileSystem,
-            servicesRestartPolicy: this.config.servicesRestartPolicy,
-            projects: this.config.projects,
+            servicesRestartPolicy: this.defaultConfig.servicesRestartPolicy,
+            projects: this.defaultConfig.projects,
             services: configServices
         };
     }

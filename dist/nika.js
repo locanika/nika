@@ -25,13 +25,14 @@ const figlet = require("figlet");
 const systemService = new SystemService_1.SystemService();
 const fileSystemService = new FileSystemService_1.FileSystemService(systemService);
 const configService = new ConfigService_1.ConfigService(fileSystemService, systemService);
-const config = configService.build();
+const userConfig = configService.buildUserConfig();
+const defaultConfig = configService.buildDefaultConfig();
 const loggerService = new LoggerService_1.LoggerService();
-const installService = new InstallService_1.InstallService(config);
-const dockerService = new DockerService_1.DockerService(config, fileSystemService);
-const dnsService = new DnsService_1.DnsService(config, dockerService, fileSystemService, loggerService);
-const templateService = new TemplateService_1.TemplateService(config, fileSystemService, dockerService, loggerService);
-const statusService = new StatusService_1.StatusService(config, loggerService);
+const installService = new InstallService_1.InstallService(defaultConfig, userConfig);
+const dockerService = new DockerService_1.DockerService(userConfig, fileSystemService);
+const dnsService = new DnsService_1.DnsService(userConfig, dockerService, fileSystemService, loggerService);
+const templateService = new TemplateService_1.TemplateService(userConfig, fileSystemService, dockerService, loggerService);
+const statusService = new StatusService_1.StatusService(userConfig, loggerService);
 program
     .name('nika')
     .addHelpText('beforeAll', figlet.textSync("Localenv Nika"))
@@ -54,7 +55,7 @@ program
 program
     .command('install')
     .description('Change current configuration')
-    .action(() => { (new InstallCommand_1.InstallCommand(config, configService, installService, loggerService)).invoke(); });
+    .action(() => { (new InstallCommand_1.InstallCommand(defaultConfig, configService, installService, loggerService)).invoke(); });
 program
     .command('dns')
     .description('Configure nginx gateway and /etc/hosts for local domain names')
@@ -62,11 +63,11 @@ program
 program
     .command('projects-init')
     .description('Clone all GIT repositories specified in projects list')
-    .action(() => { (new ProjectsInitCommand_1.ProjectsInitCommand(config, systemService, fileSystemService, loggerService)).invoke(); });
+    .action(() => { (new ProjectsInitCommand_1.ProjectsInitCommand(userConfig, systemService, fileSystemService, loggerService)).invoke(); });
 program
     .command('projects-pull')
     .description('Fetch latest changes from GIT repositories specified in projects list')
-    .action(() => { (new ProjectsPullCommand_1.ProjectsPullCommand(config, systemService, loggerService)).invoke(); });
+    .action(() => { (new ProjectsPullCommand_1.ProjectsPullCommand(userConfig, systemService, loggerService)).invoke(); });
 program
     .command('services-init')
     .description('Rebuild docker files in services folder')
@@ -74,18 +75,18 @@ program
 program
     .command('services-ps')
     .description('List all running docker containers')
-    .action(() => { (new ServicesPsCommand_1.ServicesPsCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesPsCommand_1.ServicesPsCommand(userConfig, systemService)).invoke(); });
 program
     .command('services-up')
     .description('Create and start containers')
-    .action(() => { (new ServicesUpCommand_1.ServicesUpCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesUpCommand_1.ServicesUpCommand(userConfig, systemService)).invoke(); });
 program
     .command('services-down')
     .description('Stop and remove containers, networks')
-    .action(() => { (new ServicesDownCommand_1.ServicesDownCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesDownCommand_1.ServicesDownCommand(userConfig, systemService)).invoke(); });
 program
     .command('services-build')
     .description('Pull service images and build or rebuild services')
-    .action(() => { (new ServicesBuildCommand_1.ServicesBuildCommand(config, systemService)).invoke(); });
+    .action(() => { (new ServicesBuildCommand_1.ServicesBuildCommand(userConfig, systemService)).invoke(); });
 program.parse();
 //# sourceMappingURL=nika.js.map

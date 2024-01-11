@@ -6,7 +6,7 @@ import {ServiceDTO, ServiceGroupDTO} from "../services/ConfigService";
 
 export class InstallCommand {
     constructor(
-        private config: ConfigDTO,
+        private defaultConfig: ConfigDTO,
         private configService: ConfigService,
         private installService: InstallService,
         private logger: LoggerService
@@ -41,8 +41,8 @@ export class InstallCommand {
     private mapAnswersToConfigDTO(answers: any): ConfigDTO {
         let configServices = [];
 
-        for (const i in this.config.services) {
-            const serviceGroup = this.config.services[i];
+        for (const i in this.defaultConfig.services) {
+            const serviceGroup = this.defaultConfig.services[i];
             let serviceGroupItems = [];
 
             for (const j in serviceGroup.services) {
@@ -61,12 +61,12 @@ export class InstallCommand {
         }
 
         return {
-            pathToGatewayProject: this.config.pathToGatewayProject,
-            pathToDockerConfig: this.config.pathToDockerConfig,
-            osName: this.config.osName,
+            pathToGatewayProject: this.defaultConfig.pathToGatewayProject,
+            pathToDockerConfig: this.defaultConfig.pathToDockerConfig,
+            osName: this.defaultConfig.osName,
             fileSystem: answers.fileSystem,
-            servicesRestartPolicy: this.config.servicesRestartPolicy,
-            projects: this.config.projects,
+            servicesRestartPolicy: this.defaultConfig.servicesRestartPolicy,
+            projects: this.defaultConfig.projects,
             services: configServices
         };
     }
