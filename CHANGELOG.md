@@ -2,9 +2,13 @@
 
 All changes to the local environment Nika are documented here.
 
+## [2.0.3] - 2023-01-11
+
+- Disable loop for install command.
+
 ## [2.0.2] - 2023-01-10
 
-- Add validation for external service ports
+- Add validation for external service ports.
 
 ## [2.0.1] - 2023-01-10
 
