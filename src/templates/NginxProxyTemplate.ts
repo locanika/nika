@@ -12,7 +12,7 @@ server {
                 add_header 'Access-Control-Allow-Origin' "$http_origin" always;
                 add_header 'Access-Control-Allow-Credentials' 'true' always;
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-PARAMETERS-CHECKSUM,X-CURRENT-USER-CHECKSUM,X-CALLER' always;
+                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-PARAMETERS-CHECKSUM,X-CURRENT-USER-CHECKSUM,X-CALLER,X-AUTH-TOKEN' always;
                 add_header 'Access-Control-Max-Age' 1728000;
                 add_header 'Content-Type' 'text/plain; charset=utf-8';
                 add_header 'Content-Length' 0;
@@ -22,7 +22,7 @@ server {
             add_header 'Access-Control-Allow-Origin' "$http_origin" always;
             add_header 'Access-Control-Allow-Credentials' 'true' always;
             add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
-            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-PARAMETERS-CHECKSUM,X-CURRENT-USER-CHECKSUM,X-CALLER' always;
+            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-PARAMETERS-CHECKSUM,X-CURRENT-USER-CHECKSUM,X-CALLER,X-AUTH-TOKEN' always;
         {% endif %}
 
         proxy_set_header Host $http_host;
