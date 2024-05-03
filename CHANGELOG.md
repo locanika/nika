@@ -2,6 +2,10 @@
 
 All changes to the local environment Nika are documented here.
 
+## [2.0.6] - 2024-05-03
+
+- Update nginx teplate with a new allowed HTTP header.
+
 ## [2.0.5] - 2023-01-11
 
 - Remove option `services_restart_policy`.
